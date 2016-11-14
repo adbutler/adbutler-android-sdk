@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.sparklit.adbutler.AdButler;
+import com.sparklit.adbutler.PlacementRequestConfig;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,7 +16,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void requestPlacement(View view) {
+        PlacementRequestConfig config = new PlacementRequestConfig.Builder(153105, 214764, 300, 250).build();
         AdButler adbutler = new AdButler();
-        adbutler.requestPlacement();
+        adbutler.requestPlacement(config);
     }
 }

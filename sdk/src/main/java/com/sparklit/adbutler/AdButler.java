@@ -1,12 +1,12 @@
 package com.sparklit.adbutler;
 
-import java.io.IOException;
+import java.util.Map;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by ryuichis on 11/12/16.
@@ -18,30 +18,29 @@ public class AdButler {
     private APIService _service;
 
     public void requestPlacement(PlacementRequestConfig config) {
-        Call<ResponseBody> call = _getAPIService().requestPlacement(_buildConfigParam(config));
-        call.enqueue(new Callback<ResponseBody>() {
+        Call<PlacementResponse> call = _getAPIService().requestPlacement(_buildConfigParam(config));
+        call.enqueue(new Callback<PlacementResponse>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                System.out.println(response.code());
-
-                try {
-                    System.out.println(response.body().string());
-                } catch (IOException e) {
-                    e.printStackTrace();
+            public void onResponse(Call<PlacementResponse> call, Response<PlacementResponse> response) {
+                System.out.println(response.body().getStatus());
+                for (Map.Entry<String, Placement> entry : response.body().getPlacements().entrySet()) {
+                    System.out.println(entry.getKey());
+                    System.out.println(entry.getValue().getBannerId());
                 }
-
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                // :)
+            public void onFailure(Call<PlacementResponse> call, Throwable t) {
+
             }
         });
     }
 
     private APIService _getAPIService() {
         if (_service == null) {
-            Retrofit.Builder builder = new Retrofit.Builder().baseUrl(ADBUTLER_ENDPOINT);
+            Retrofit.Builder builder = new Retrofit.Builder()
+                    .baseUrl(ADBUTLER_ENDPOINT)
+                    .addConverterFactory(GsonConverterFactory.create());
             _service = builder.build().create(APIService.class);
         }
 

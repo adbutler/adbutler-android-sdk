@@ -1,7 +1,5 @@
 package com.sparklit.adbutler;
 
-import java.util.Map;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -17,21 +15,17 @@ public class AdButler {
 
     private APIService _service;
 
-    public void requestPlacement(PlacementRequestConfig config) {
+    public void requestPlacement(PlacementRequestConfig config, final PlacementResponseListener listener) {
         Call<PlacementResponse> call = _getAPIService().requestPlacement(_buildConfigParam(config));
         call.enqueue(new Callback<PlacementResponse>() {
             @Override
             public void onResponse(Call<PlacementResponse> call, Response<PlacementResponse> response) {
-                System.out.println(response.body().getStatus());
-                for (Map.Entry<String, Placement> entry : response.body().getPlacements().entrySet()) {
-                    System.out.println(entry.getKey());
-                    System.out.println(entry.getValue().getBannerId());
-                }
+                listener.success(response.body());
             }
 
             @Override
             public void onFailure(Call<PlacementResponse> call, Throwable t) {
-
+                listener.error(t);
             }
         });
     }

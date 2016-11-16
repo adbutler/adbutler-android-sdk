@@ -9,10 +9,7 @@ import java.util.Map;
  */
 
 public class PlacementResponse {
-    @SerializedName("status")
     private String status;
-
-    @SerializedName("placements")
     private Map<String, Placement> placements;
 
     public Map<String, Placement> getPlacements() {

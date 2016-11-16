@@ -1,5 +1,9 @@
 package com.sparklit.adbutler;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,9 +36,12 @@ public class AdButler {
 
     private APIService getAPIService() {
         if (service == null) {
+            Gson gson = new GsonBuilder()
+                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                    .create();
             Retrofit.Builder builder = new Retrofit.Builder()
                     .baseUrl(ADBUTLER_ENDPOINT)
-                    .addConverterFactory(GsonConverterFactory.create());
+                    .addConverterFactory(GsonConverterFactory.create(gson));
             service = builder.build().create(APIService.class);
         }
 

@@ -7,40 +7,17 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Placement {
-    @SerializedName("banner_id")
     private int bannerId;
-
-    @SerializedName("redirect_url")
     private String redirectUrl;
-
-    @SerializedName("image_url")
     private String imageUrl;
-
-    @SerializedName("width")
     private int width;
-
-    @SerializedName("height")
     private int height;
-
-    @SerializedName("alt_text")
     private String altText;
-
-    @SerializedName("target")
     private String target;
-
-    @SerializedName("tracking_pixel")
     private String trackingPixel;
-
-    @SerializedName("accupixel_url")
     private String accupixelUrl;
-
-    @SerializedName("refresh_url")
     private String refreshUrl;
-
-    @SerializedName("refresh_time")
     private String refreshTime;
-
-    @SerializedName("body")
     private String body;
 
     public int getBannerId() {

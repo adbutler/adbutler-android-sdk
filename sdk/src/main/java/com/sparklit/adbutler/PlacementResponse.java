@@ -10,25 +10,25 @@ import java.util.Map;
 
 public class PlacementResponse {
     @SerializedName("status")
-    private String _status;
+    private String status;
 
     @SerializedName("placements")
-    private Map<String, Placement> _placements;
+    private Map<String, Placement> placements;
 
     public Map<String, Placement> getPlacements() {
-        return _placements;
+        return placements;
     }
 
     public void setPlacements(Map<String, Placement> placements) {
-        _placements = placements;
+        this.placements = placements;
     }
 
     public String getStatus() {
-        return _status;
+        return status;
     }
 
     public void setStatus(String status) {
-        _status = status;
+        this.status = status;
     }
 
 }

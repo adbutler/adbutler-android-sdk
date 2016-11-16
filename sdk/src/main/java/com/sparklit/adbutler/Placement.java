@@ -8,135 +8,135 @@ import com.google.gson.annotations.SerializedName;
 
 public class Placement {
     @SerializedName("banner_id")
-    private int _bannerId;
+    private int bannerId;
 
     @SerializedName("redirect_url")
-    private String _redirectUrl;
+    private String redirectUrl;
 
     @SerializedName("image_url")
-    private String _imageUrl;
+    private String imageUrl;
 
     @SerializedName("width")
-    private int _width;
+    private int width;
 
     @SerializedName("height")
-    private int _height;
+    private int height;
 
     @SerializedName("alt_text")
-    private String _altText;
+    private String altText;
 
     @SerializedName("target")
-    private String _target;
+    private String target;
 
     @SerializedName("tracking_pixel")
-    private String _trackingPixel;
+    private String trackingPixel;
 
     @SerializedName("accupixel_url")
-    private String _accupixelUrl;
+    private String accupixelUrl;
 
     @SerializedName("refresh_url")
-    private String _refreshUrl;
+    private String refreshUrl;
 
     @SerializedName("refresh_time")
-    private String _refreshTime;
+    private String refreshTime;
 
     @SerializedName("body")
-    private String _body;
+    private String body;
 
     public int getBannerId() {
-        return _bannerId;
+        return bannerId;
     }
 
     public void setBannerId(int bannerId) {
-        _bannerId = bannerId;
+        this.bannerId = bannerId;
     }
 
     public String getRedirectUrl() {
-        return _redirectUrl;
+        return redirectUrl;
     }
 
     public void setRedirectUrl(String redirectUrl) {
-        _redirectUrl = redirectUrl;
+        this.redirectUrl = redirectUrl;
     }
 
     public String getImageUrl() {
-        return _imageUrl;
+        return imageUrl;
     }
 
     public void setImageUrl(String imageUrl) {
-        _imageUrl = imageUrl;
+        this.imageUrl = imageUrl;
     }
 
     public int getWidth() {
-        return _width;
+        return width;
     }
 
     public void setWidth(int width) {
-        _width = width;
+        this.width = width;
     }
 
     public int getHeight() {
-        return _height;
+        return height;
     }
 
     public void setHeight(int height) {
-        _height = height;
+        this.height = height;
     }
 
     public String getAltText() {
-        return _altText;
+        return altText;
     }
 
     public void setAltText(String altText) {
-        _altText = altText;
+        this.altText = altText;
     }
 
     public String getTarget() {
-        return _target;
+        return target;
     }
 
     public void setTarget(String target) {
-        _target = target;
+        this.target = target;
     }
 
     public String getTrackingPixel() {
-        return _trackingPixel;
+        return trackingPixel;
     }
 
     public void setTrackingPixel(String trackingPixel) {
-        _trackingPixel = trackingPixel;
+        this.trackingPixel = trackingPixel;
     }
 
     public String getAccupixelUrl() {
-        return _accupixelUrl;
+        return accupixelUrl;
     }
 
     public void setAccupixelUrl(String accupixelUrl) {
-        _accupixelUrl = accupixelUrl;
+        this.accupixelUrl = accupixelUrl;
     }
 
     public String getRefreshUrl() {
-        return _refreshUrl;
+        return refreshUrl;
     }
 
     public void setRefreshUrl(String refreshUrl) {
-        _refreshUrl = refreshUrl;
+        this.refreshUrl = refreshUrl;
     }
 
     public String getRefreshTime() {
-        return _refreshTime;
+        return refreshTime;
     }
 
     public void setRefreshTime(String refreshTime) {
-        _refreshTime = refreshTime;
+        this.refreshTime = refreshTime;
     }
 
     public String getBody() {
-        return _body;
+        return body;
     }
 
     public void setBody(String body) {
-        _body = body;
+        this.body = body;
     }
 
 }

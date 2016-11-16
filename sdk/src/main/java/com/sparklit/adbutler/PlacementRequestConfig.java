@@ -8,67 +8,67 @@ import java.util.Set;
  */
 
 public class PlacementRequestConfig {
-    private int _accountId;
-    private int _zoneId;
-    private int _width;
-    private int _height;
-    private Set<String> _keywords;
-    private String _click;
+    private int accountId;
+    private int zoneId;
+    private int width;
+    private int height;
+    private Set<String> keywords;
+    private String click;
 
     public int getAccountId() {
-        return _accountId;
+        return accountId;
     }
 
     public int getZoneId() {
-        return _zoneId;
+        return zoneId;
     }
 
     public int getWidth() {
-        return _width;
+        return width;
     }
 
     public int getHeight() {
-        return _height;
+        return height;
     }
 
     public Set<String> getKeywords() {
-        return _keywords;
+        return keywords;
     }
 
     public String getClick() {
-        return _click;
+        return click;
     }
 
     public static class Builder {
-        private int _accountId;
-        private int _zoneId;
-        private int _width;
-        private int _height;
-        private Set<String> _keywords;
-        private String _click;
+        private int accountId;
+        private int zoneId;
+        private int width;
+        private int height;
+        private Set<String> keywords;
+        private String click;
 
         public Builder(int accountId, int zoneId, int width, int height) {
-            _accountId = accountId;
-            _zoneId = zoneId;
-            _width = width;
-            _height = height;
+            this.accountId = accountId;
+            this.zoneId = zoneId;
+            this.width = width;
+            this.height = height;
         }
 
         public Builder setKeywords(Set<String> keywords) {
-            _keywords = keywords;
+            this.keywords = keywords;
             return this;
         }
 
         public Builder addKeyword(String keyword) {
-            if (_keywords == null) {
-                _keywords = new HashSet<>();
+            if (keywords == null) {
+                keywords = new HashSet<>();
             }
-            _keywords.add(keyword);
+            keywords.add(keyword);
             return this;
         }
 
         public Builder setClick(String click) {
-            _click = click;
+            this.click = click;
             return this;
         }
 
@@ -78,11 +78,11 @@ public class PlacementRequestConfig {
     }
 
     private PlacementRequestConfig(Builder builder) {
-        _accountId = builder._accountId;
-        _zoneId = builder._zoneId;
-        _width = builder._width;
-        _height = builder._height;
-        _keywords = builder._keywords;
-        _click = builder._click;
+        accountId = builder.accountId;
+        zoneId = builder.zoneId;
+        width = builder.width;
+        height = builder.height;
+        keywords = builder.keywords;
+        click = builder.click;
     }
 }

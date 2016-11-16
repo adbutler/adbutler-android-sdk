@@ -13,10 +13,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class AdButler {
     static final String ADBUTLER_ENDPOINT = "https://servedbyadbutler.com/adserve/";
 
-    private APIService _service;
+    private APIService service;
 
     public void requestPlacement(PlacementRequestConfig config, final PlacementResponseListener listener) {
-        Call<PlacementResponse> call = _getAPIService().requestPlacement(_buildConfigParam(config));
+        Call<PlacementResponse> call = getAPIService().requestPlacement(buildConfigParam(config));
         call.enqueue(new Callback<PlacementResponse>() {
             @Override
             public void onResponse(Call<PlacementResponse> call, Response<PlacementResponse> response) {
@@ -30,18 +30,18 @@ public class AdButler {
         });
     }
 
-    private APIService _getAPIService() {
-        if (_service == null) {
+    private APIService getAPIService() {
+        if (service == null) {
             Retrofit.Builder builder = new Retrofit.Builder()
                     .baseUrl(ADBUTLER_ENDPOINT)
                     .addConverterFactory(GsonConverterFactory.create());
-            _service = builder.build().create(APIService.class);
+            service = builder.build().create(APIService.class);
         }
 
-        return _service;
+        return service;
     }
 
-    private String _buildConfigParam(PlacementRequestConfig config) {
+    private String buildConfigParam(PlacementRequestConfig config) {
         String urlString = String.format(";ID=%d;size=%dx%d;setID=%d",
                 config.getAccountId(),
                 config.getWidth(),

@@ -77,13 +77,13 @@ public class AdButler {
         List<Placement> placements = new ArrayList<>();
         for (PlacementResponse response : responses) {
             if (response.getStatus().equals("SUCCESS")) {
-                placements.addAll(response.getPlacements().values());
+                placements.addAll(response.getPlacements());
             }
         }
         String status = placements.isEmpty() ? "NO_ADS" : "SUCCESS";
         PlacementResponse placementResponse = new PlacementResponse();
         placementResponse.setStatus(status);
-        // placementResponse.setPlacements(placements);
+        placementResponse.setPlacements(placements);
 
         listener.success(placementResponse);
     }

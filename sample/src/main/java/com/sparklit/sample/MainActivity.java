@@ -32,9 +32,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void success(PlacementResponse response) {
                 System.out.println(response.getStatus());
-                for (Map.Entry<String, Placement> entry : response.getPlacements().entrySet()) {
-                    System.out.println(entry.getKey());
-                    System.out.println(entry.getValue().getBannerId());
+                for (Placement placement : response.getPlacements()) {
+                    System.out.println(placement.getBannerId());
                 }
             }
 
@@ -64,9 +63,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void success(PlacementResponse response) {
                 System.out.println(response.getStatus());
-                for (Map.Entry<String, Placement> entry : response.getPlacements().entrySet()) {
-                    System.out.println(entry.getKey());
-                    System.out.println(entry.getValue().getBannerId());
+                for (Placement placement : response.getPlacements()) {
+                    System.out.println(placement.getBannerId());
                 }
             }
 

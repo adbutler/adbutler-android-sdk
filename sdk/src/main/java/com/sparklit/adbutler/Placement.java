@@ -1,7 +1,5 @@
 package com.sparklit.adbutler;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  * Created by ryuichis on 11/14/16.
  */

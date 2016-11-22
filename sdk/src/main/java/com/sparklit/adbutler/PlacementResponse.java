@@ -1,7 +1,8 @@
 package com.sparklit.adbutler;
 
-import com.google.gson.annotations.SerializedName;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,12 +13,20 @@ public class PlacementResponse {
     private String status;
     private Map<String, Placement> placements;
 
-    public Map<String, Placement> getPlacements() {
+    public List<Placement> getPlacements() {
+        List<Placement> placements = new ArrayList<>();
+        for (Map.Entry<String, Placement> placementEntry: this.placements.entrySet()) {
+            placements.add(placementEntry.getValue());
+        }
         return placements;
     }
 
-    public void setPlacements(Map<String, Placement> placements) {
-        this.placements = placements;
+    public void setPlacements(List<Placement> placements) {
+        this.placements = new HashMap<>();
+        for (int i = 0; i < placements.size(); i++) {
+            String name = "placement_" + (i + 1);
+            this.placements.put(name, placements.get(i));
+        }
     }
 
     public String getStatus() {

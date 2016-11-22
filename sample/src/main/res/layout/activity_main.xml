@@ -12,9 +12,20 @@
         android:text="Request Placement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button"
+        android:id="@+id/button1"
         android:onClick="requestPlacement"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="Request Placements"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button2"
+        android:onClick="requestPlacements"
+        android:layout_below="@+id/button1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="18dp" />
 </RelativeLayout>

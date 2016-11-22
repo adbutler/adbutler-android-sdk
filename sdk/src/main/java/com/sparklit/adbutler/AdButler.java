@@ -4,6 +4,9 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,6 +36,58 @@ public class AdButler {
             }
         });
     }
+
+    public void requestPlacements(List<PlacementRequestConfig> configs, final PlacementResponseListener listener) {
+        final List<Call<PlacementResponse>> calls = new ArrayList<>();
+        for (PlacementRequestConfig config : configs) {
+            calls.add(getAPIService().requestPlacement(buildConfigParam(config)));
+        }
+        final List<PlacementResponse> responses = new ArrayList<>();
+        final List<Throwable> throwables = new ArrayList<>();
+        for (Call<PlacementResponse> call : calls) {
+            call.enqueue(new Callback<PlacementResponse>() {
+                @Override
+                public void onResponse(Call<PlacementResponse> call, Response<PlacementResponse> response) {
+                    responses.add(response.body());
+                    checkResults(listener, calls, responses, throwables);
+                }
+
+                @Override
+                public void onFailure(Call<PlacementResponse> call, Throwable t) {
+                    throwables.add(t);
+                    checkResults(listener, calls, responses, throwables);
+                }
+            });
+        }
+    }
+
+    private void checkResults(final PlacementResponseListener listener,
+                                    List<Call<PlacementResponse>> calls,
+                                    List<PlacementResponse> responses,
+                                    List<Throwable> throwables) {
+        if (responses.size() + throwables.size() != calls.size()) {
+            return;
+        }
+
+        if (!throwables.isEmpty()) {
+            listener.error(throwables.get(0));
+            return;
+        }
+
+        List<Placement> placements = new ArrayList<>();
+        for (PlacementResponse response : responses) {
+            if (response.getStatus().equals("SUCCESS")) {
+                placements.addAll(response.getPlacements().values());
+            }
+        }
+        String status = placements.isEmpty() ? "NO_ADS" : "SUCCESS";
+        PlacementResponse placementResponse = new PlacementResponse();
+        placementResponse.setStatus(status);
+        // placementResponse.setPlacements(placements);
+
+        listener.success(placementResponse);
+    }
+
 
     private APIService getAPIService() {
         if (service == null) {

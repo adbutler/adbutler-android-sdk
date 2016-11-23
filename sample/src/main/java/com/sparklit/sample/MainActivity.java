@@ -46,10 +46,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void requestPlacements(View view) {
         PlacementRequestConfig config1 = new PlacementRequestConfig.Builder(153105, 214764, 300, 250).build();
+
         String[] keywords = {"sample2"};
         Set<String> keywordSet = new HashSet<>();
         Collections.addAll(keywordSet, keywords);
-
         PlacementRequestConfig config2 = new PlacementRequestConfig.Builder(153105, 214764, 300, 250)
                 .setKeywords(keywordSet)
                 .build();
@@ -78,5 +78,55 @@ public class MainActivity extends AppCompatActivity {
     public void requestPixel(View view) {
         AdButler adbutler = new AdButler();
         adbutler.requestPixel("https://servedbyadbutler.com/default_banner.gif");
+    }
+
+    public void recordImpression(View view) {
+        String[] keywords = {"sample2"};
+        Set<String> keywordSet = new HashSet<>();
+        Collections.addAll(keywordSet, keywords);
+        PlacementRequestConfig config = new PlacementRequestConfig.Builder(153105, 214764, 300, 250)
+                .setKeywords(keywordSet)
+                .build();
+
+        AdButler adbutler = new AdButler();
+        adbutler.requestPlacement(config, new PlacementResponseListener() {
+            @Override
+            public void success(PlacementResponse response) {
+                System.out.println(response.getStatus());
+                for (Placement placement : response.getPlacements()) {
+                    placement.recordImpression();
+                }
+            }
+
+            @Override
+            public void error(Throwable throwable) {
+
+            }
+        });
+    }
+
+    public void recordClick(View view) {
+        String[] keywords = {"sample2"};
+        Set<String> keywordSet = new HashSet<>();
+        Collections.addAll(keywordSet, keywords);
+        PlacementRequestConfig config = new PlacementRequestConfig.Builder(153105, 214764, 300, 250)
+                .setKeywords(keywordSet)
+                .build();
+
+        AdButler adbutler = new AdButler();
+        adbutler.requestPlacement(config, new PlacementResponseListener() {
+            @Override
+            public void success(PlacementResponse response) {
+                System.out.println(response.getStatus());
+                for (Placement placement : response.getPlacements()) {
+                    placement.recordClick();
+                }
+            }
+
+            @Override
+            public void error(Throwable throwable) {
+
+            }
+        });
     }
 }

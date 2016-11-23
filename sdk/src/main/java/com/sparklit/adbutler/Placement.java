@@ -66,5 +66,20 @@ public class Placement {
         return body;
     }
 
+    public void recordImpression() {
+        AdButler adButler = new AdButler();
+        if (getAccupixelUrl() != null) {
+            adButler.requestPixel(getAccupixelUrl());
+        } else if (getTrackingPixel() != null) {
+            adButler.requestPixel(getTrackingPixel());
+        }
+    }
+
+    public void recordClick() {
+        if (getRedirectUrl() != null) {
+            AdButler adButler = new AdButler();
+            adButler.requestPixel(getRedirectUrl());
+        }
+    }
 }
 

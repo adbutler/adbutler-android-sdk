@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,6 +22,23 @@ public class AdButler {
     static final String ADBUTLER_ENDPOINT = "https://servedbyadbutler.com/adserve/";
 
     private APIService service;
+
+    public void requestPixel(String url) {
+        Call<ResponseBody> call = getAPIService().requestPixel(url);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                System.out.println(response.isSuccessful());
+                // :)
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+                // :)
+            }
+        });
+    }
 
     public void requestPlacement(PlacementRequestConfig config, final PlacementResponseListener listener) {
         Call<PlacementResponse> call = getAPIService().requestPlacement(buildConfigParam(config));

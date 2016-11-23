@@ -74,4 +74,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void requestPixel(View view) {
+        AdButler adbutler = new AdButler();
+        adbutler.requestPixel("https://servedbyadbutler.com/default_banner.gif");
+    }
 }

@@ -27,7 +27,7 @@
         android:layout_below="@+id/button1"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="18dp" />
+        android:layout_marginTop="16dp" />
 
     <Button
         android:text="Request Pixel"
@@ -38,7 +38,7 @@
         android:layout_below="@+id/button2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="18dp" />
+        android:layout_marginTop="16dp" />
 
     <Button
         android:text="Record Impression"
@@ -49,7 +49,7 @@
         android:layout_below="@+id/button3"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="18dp" />
+        android:layout_marginTop="16dp" />
 
     <Button
         android:text="Record Click"
@@ -60,5 +60,5 @@
         android:layout_below="@+id/button4"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="18dp" />
+        android:layout_marginTop="16dp" />
 </RelativeLayout>

@@ -62,6 +62,14 @@ public class MainActivity extends AppCompatActivity {
                             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
                             imageView.setImageDrawable(drawable);
                             imageView.setVisibility(View.VISIBLE);
+                            imageView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    placement.recordClick();
+                                }
+                            });
+
+                            placement.recordImpression();
                         }
                     });
                 }

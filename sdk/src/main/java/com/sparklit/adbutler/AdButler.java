@@ -1,5 +1,7 @@
 package com.sparklit.adbutler;
 
+import android.graphics.drawable.Drawable;
+
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,6 +32,27 @@ public class AdButler {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 System.out.println(response.isSuccessful());
                 // :)
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+                // :)
+            }
+        });
+    }
+
+    public void requestImage(String imageUrl, final PlacementImageListener listener) {
+        Call<ResponseBody> call = getAPIService().requestImage(imageUrl);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                System.out.println(response.isSuccessful());
+                if (response.isSuccessful()) {
+                    Drawable drawable = Drawable.createFromStream(response.body().byteStream(), "image");
+
+                    listener.success(drawable);
+                }
             }
 
             @Override

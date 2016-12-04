@@ -1,11 +1,15 @@
 package com.sparklit.sample;
 
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.sparklit.adbutler.AdButler;
 import com.sparklit.adbutler.Placement;
+import com.sparklit.adbutler.PlacementImageListener;
 import com.sparklit.adbutler.PlacementRequestConfig;
 import com.sparklit.adbutler.PlacementResponse;
 import com.sparklit.adbutler.PlacementResponseListener;
@@ -14,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,7 +29,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void requestPlacement(View view) {
-        PlacementRequestConfig config = new PlacementRequestConfig.Builder(153105, 214764, 300, 250).build();
+        String[] keywords = {"sample2"};
+        Set<String> keywordSet = new HashSet<>();
+        Collections.addAll(keywordSet, keywords);
+        PlacementRequestConfig config = new PlacementRequestConfig.Builder(153105, 214764, 300, 250)
+                .setKeywords(keywordSet)
+                .build();
         AdButler adbutler = new AdButler();
         adbutler.requestPlacement(config, new PlacementResponseListener() {
             @Override
@@ -34,6 +42,28 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println(response.getStatus());
                 for (Placement placement : response.getPlacements()) {
                     System.out.println(placement.getBannerId());
+                }
+
+                if (response.getPlacements().size() > 0) {
+                    final Placement placement = response.getPlacements().get(0);
+
+                    AdButler adbutler = new AdButler();
+                    adbutler.requestImage(placement.getImageUrl(), new PlacementImageListener() {
+                        @Override
+                        public void success(Drawable drawable) {
+                            ImageView imageView = new ImageView(getBaseContext());
+
+                            RelativeLayout layout = (RelativeLayout) findViewById(R.id.activity_main);
+                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(placement.getWidth(), placement.getHeight());
+                            params.topMargin = 16;
+                            params.addRule(RelativeLayout.BELOW, R.id.button5);
+                            layout.addView(imageView, params);
+
+                            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                            imageView.setImageDrawable(drawable);
+                            imageView.setVisibility(View.VISIBLE);
+                        }
+                    });
                 }
             }
 

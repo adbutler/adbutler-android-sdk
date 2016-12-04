@@ -16,4 +16,7 @@ public interface APIService {
 
     @GET
     Call<ResponseBody> requestPixel(@Url String url);
+
+    @GET
+    Call<ResponseBody> requestImage(@Url String imageUrl);
 }

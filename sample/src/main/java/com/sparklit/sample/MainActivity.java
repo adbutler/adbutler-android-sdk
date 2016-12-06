@@ -13,6 +13,7 @@ import com.sparklit.adbutler.PlacementImageListener;
 import com.sparklit.adbutler.PlacementRequestConfig;
 import com.sparklit.adbutler.PlacementResponse;
 import com.sparklit.adbutler.PlacementResponseListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,32 +47,32 @@ public class MainActivity extends AppCompatActivity {
 
                 if (response.getPlacements().size() > 0) {
                     final Placement placement = response.getPlacements().get(0);
+                    if (placement != null) {
+                        ImageView imageView = new ImageView(getBaseContext());
 
-                    AdButler adbutler = new AdButler();
-                    adbutler.requestImage(placement.getImageUrl(), new PlacementImageListener() {
-                        @Override
-                        public void success(Drawable drawable) {
-                            ImageView imageView = new ImageView(getBaseContext());
+                        RelativeLayout layout = (RelativeLayout) findViewById(R.id.activity_main);
+                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(placement.getWidth(), placement.getHeight());
+                        params.topMargin = 16;
+                        params.addRule(RelativeLayout.BELOW, R.id.button5);
+                        layout.addView(imageView, params);
 
-                            RelativeLayout layout = (RelativeLayout) findViewById(R.id.activity_main);
-                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(placement.getWidth(), placement.getHeight());
-                            params.topMargin = 16;
-                            params.addRule(RelativeLayout.BELOW, R.id.button5);
-                            layout.addView(imageView, params);
+                        imageView.setVisibility(View.VISIBLE);
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                placement.recordClick();
+                            }
+                        });
 
-                            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                            imageView.setImageDrawable(drawable);
-                            imageView.setVisibility(View.VISIBLE);
-                            imageView.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    placement.recordClick();
-                                }
-                            });
+                        Picasso.with(getBaseContext())
+                                .load(placement.getImageUrl())
+                                .resize(placement.getWidth(), placement.getHeight())
+                                .into(imageView);
 
-                            placement.recordImpression();
-                        }
-                    });
+                        placement.recordImpression();
+                    }
+
+
                 }
             }
 

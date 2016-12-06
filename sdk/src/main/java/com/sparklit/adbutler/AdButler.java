@@ -42,27 +42,6 @@ public class AdButler {
         });
     }
 
-    public void requestImage(String imageUrl, final PlacementImageListener listener) {
-        Call<ResponseBody> call = getAPIService().requestImage(imageUrl);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                System.out.println(response.isSuccessful());
-                if (response.isSuccessful()) {
-                    Drawable drawable = Drawable.createFromStream(response.body().byteStream(), "image");
-
-                    listener.success(drawable);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                t.printStackTrace();
-                // :)
-            }
-        });
-    }
-
     public void requestPlacement(PlacementRequestConfig config, final PlacementResponseListener listener) {
         Call<PlacementResponse> call = getAPIService().requestPlacement(buildConfigParam(config));
         call.enqueue(new Callback<PlacementResponse>() {

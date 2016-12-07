@@ -1,15 +1,12 @@
 package com.sparklit.sample;
 
-import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.sparklit.adbutler.AdButler;
 import com.sparklit.adbutler.Placement;
-import com.sparklit.adbutler.PlacementImageListener;
 import com.sparklit.adbutler.PlacementRequestConfig;
 import com.sparklit.adbutler.PlacementResponse;
 import com.sparklit.adbutler.PlacementResponseListener;

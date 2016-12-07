@@ -48,13 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 if (response.getPlacements().size() > 0) {
                     final Placement placement = response.getPlacements().get(0);
                     if (placement != null) {
-                        ImageView imageView = new ImageView(getBaseContext());
-
-                        RelativeLayout layout = (RelativeLayout) findViewById(R.id.activity_main);
-                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(placement.getWidth(), placement.getHeight());
-                        params.topMargin = 16;
-                        params.addRule(RelativeLayout.BELOW, R.id.button5);
-                        layout.addView(imageView, params);
+                        ImageView imageView = (ImageView) findViewById(R.id.imageButton);
 
                         imageView.setVisibility(View.VISIBLE);
                         imageView.setOnClickListener(new View.OnClickListener() {
@@ -71,8 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
                         placement.recordImpression();
                     }
-
-
                 }
             }
 

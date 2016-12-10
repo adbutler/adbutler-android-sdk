@@ -6,13 +6,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by ryuichis on 11/14/16.
+ * Holds the response status and list of placements.
  */
-
 public class PlacementResponse {
     private String status;
     private Map<String, Placement> placements;
 
+    /**
+     * @return list of placements received from the API.
+     */
     public List<Placement> getPlacements() {
         List<Placement> placements = new ArrayList<>();
         for (Map.Entry<String, Placement> placementEntry: this.placements.entrySet()) {
@@ -21,7 +23,7 @@ public class PlacementResponse {
         return placements;
     }
 
-    public void setPlacements(List<Placement> placements) {
+    void setPlacements(List<Placement> placements) {
         this.placements = new HashMap<>();
         for (int i = 0; i < placements.size(); i++) {
             String name = "placement_" + (i + 1);
@@ -29,11 +31,14 @@ public class PlacementResponse {
         }
     }
 
+    /**
+     * @return the status of the response.
+     */
     public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    void setStatus(String status) {
         this.status = status;
     }
 

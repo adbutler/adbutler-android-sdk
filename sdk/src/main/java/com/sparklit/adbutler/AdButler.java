@@ -15,14 +15,18 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by ryuichis on 11/12/16.
+ * Makes requests against the AdButler API.
  */
-
 public class AdButler {
     static final String ADBUTLER_ENDPOINT = "https://servedbyadbutler.com/adserve/";
 
     private APIService service;
 
+    /**
+     * Requests a pixel.
+     *
+     * @param url the URL string for this pixel.
+     */
     public void requestPixel(String url) {
         Call<ResponseBody> call = getAPIService().requestPixel(url);
         call.enqueue(new Callback<ResponseBody>() {
@@ -40,6 +44,12 @@ public class AdButler {
         });
     }
 
+    /**
+     * Requests a single placement.
+     *
+     * @param config   the configuration used for requesting one placement.
+     * @param listener the results, when ready, will be given to this given listener.
+     */
     public void requestPlacement(PlacementRequestConfig config, final PlacementResponseListener listener) {
         Call<PlacementResponse> call = getAPIService().requestPlacement(buildConfigParam(config));
         call.enqueue(new Callback<PlacementResponse>() {
@@ -55,6 +65,12 @@ public class AdButler {
         });
     }
 
+    /**
+     * Requests multiple placements.
+     *
+     * @param configs  the configurations, each used for one placement respectively.
+     * @param listener the results, when ready, will be given to this given listener.
+     */
     public void requestPlacements(List<PlacementRequestConfig> configs, final PlacementResponseListener listener) {
         final List<Call<PlacementResponse>> calls = new ArrayList<>();
         for (PlacementRequestConfig config : configs) {

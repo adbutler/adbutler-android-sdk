@@ -174,4 +174,21 @@ public class AdButlerTest {
 
         server.shutdown();
     }
+
+    @Test
+    public void testRequestPixel() throws Exception {
+        MockWebServer server = new MockWebServer();
+        server.enqueue(new MockResponse().setBody("{}"));
+        server.start();
+
+        String testBaseUrl = "http://" + server.getHostName() + ":" + server.getPort() + "/";
+        String testUrl = testBaseUrl + "test";
+        AdButler.ADBUTLER_ENDPOINT = "http://" + server.getHostName() + ":" + server.getPort() + "/";
+        AdButler adbutler = new AdButler();
+        adbutler.requestPixel(testUrl);
+
+        assertEquals(server.takeRequest().getPath(), "/test");
+
+        server.shutdown();
+    }
 }

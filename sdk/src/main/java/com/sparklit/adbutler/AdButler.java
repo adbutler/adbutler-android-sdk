@@ -18,7 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Makes requests against the AdButler API.
  */
 public class AdButler {
-    static final String ADBUTLER_ENDPOINT = "https://servedbyadbutler.com/adserve/";
+    static String ADBUTLER_ENDPOINT = "https://servedbyadbutler.com/adserve/";
 
     private APIService service;
 

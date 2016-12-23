@@ -1,5 +1,7 @@
 package com.sparklit.sample;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -52,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 placement.recordClick();
+
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse(placement.getRedirectUrl()));
+                                startActivity(intent);
                             }
                         });
 

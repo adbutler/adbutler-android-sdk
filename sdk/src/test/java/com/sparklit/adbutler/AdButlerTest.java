@@ -144,33 +144,35 @@ public class AdButlerTest {
         assertEquals(response.getStatus(), "SUCCESS");
         assertEquals(response.getPlacements().size(), 2);
 
-        Placement placement1 = response.getPlacements().get(0);
-        assertEquals(placement1.getBannerId(), 1);
-        assertEquals(placement1.getRedirectUrl(), "https://servedbyadbutler.com/redirect.spark?MID=153105&plid=543820&setID=214764&channelID=0&CID=0&banID=519401954&PID=0&textadID=0&tc=1&mt=1482382937922945&hc=dc0133e390300a8f3db43edb21adbb3fd596b6d1&location=");
-        assertEquals(placement1.getImageUrl(), "https://servedbyadbutler.com/default_banner.gif");
-        assertEquals(placement1.getWidth(), 300);
-        assertEquals(placement1.getHeight(), 250);
-        assertEquals(placement1.getAltText(), "");
-        assertEquals(placement1.getTarget(), "_blank");
-        assertEquals(placement1.getTrackingPixel(), "");
-        assertEquals(placement1.getAccupixelUrl(), "https://servedbyadbutler.com/adserve.ibs/;ID=153105;size=1x1;type=pixel;setID=214764;plid=543820;BID=519401954;wt=1482382947;rnd=68251");
-        assertEquals(placement1.getRefreshUrl(), "");
-        assertEquals(placement1.getRefreshTime(), "");
-        assertEquals(placement1.getBody(), "");
-
-        Placement placement2 = response.getPlacements().get(1);
-        assertEquals(placement2.getBannerId(), 2);
-        assertEquals(placement2.getRedirectUrl(), "https://servedbyadbutler.com/redirect.spark?MID=153105&plid=550986&setID=214764&channelID=0&CID=0&banID=519407754&PID=0&textadID=0&tc=1&mt=1482382941414969&hc=0aafa9e4186a53ebb33094aea2f80c3a748cc7f0&location=");
-        assertEquals(placement2.getImageUrl(), "https://servedbyadbutler.com/default_banner.gif");
-        assertEquals(placement2.getWidth(), 300);
-        assertEquals(placement2.getHeight(), 250);
-        assertEquals(placement2.getAltText(), "");
-        assertEquals(placement2.getTarget(), "_blank");
-        assertEquals(placement2.getTrackingPixel(), "https://servedbyadbutler.com/default_banner.gif?foo=bar&demo=fakepixel");
-        assertEquals(placement2.getAccupixelUrl(), "https://servedbyadbutler.com/adserve.ibs/;ID=153105;size=1x1;type=pixel;setID=214764;plid=543820;BID=519401954;wt=1482382947;rnd=68251");
-        assertEquals(placement2.getRefreshUrl(), "");
-        assertEquals(placement2.getRefreshTime(), "");
-        assertEquals(placement2.getBody(), "");
+        for (Placement placement : response.getPlacements()) {
+            if (placement.getBannerId() == 1) {
+                assertEquals(placement.getBannerId(), 1);
+                assertEquals(placement.getRedirectUrl(), "https://servedbyadbutler.com/redirect.spark?MID=153105&plid=543820&setID=214764&channelID=0&CID=0&banID=519401954&PID=0&textadID=0&tc=1&mt=1482382937922945&hc=dc0133e390300a8f3db43edb21adbb3fd596b6d1&location=");
+                assertEquals(placement.getImageUrl(), "https://servedbyadbutler.com/default_banner.gif");
+                assertEquals(placement.getWidth(), 300);
+                assertEquals(placement.getHeight(), 250);
+                assertEquals(placement.getAltText(), "");
+                assertEquals(placement.getTarget(), "_blank");
+                assertEquals(placement.getTrackingPixel(), "");
+                assertEquals(placement.getAccupixelUrl(), "https://servedbyadbutler.com/adserve.ibs/;ID=153105;size=1x1;type=pixel;setID=214764;plid=543820;BID=519401954;wt=1482382947;rnd=68251");
+                assertEquals(placement.getRefreshUrl(), "");
+                assertEquals(placement.getRefreshTime(), "");
+                assertEquals(placement.getBody(), "");
+            } else {
+                assertEquals(placement.getBannerId(), 2);
+                assertEquals(placement.getRedirectUrl(), "https://servedbyadbutler.com/redirect.spark?MID=153105&plid=550986&setID=214764&channelID=0&CID=0&banID=519407754&PID=0&textadID=0&tc=1&mt=1482382941414969&hc=0aafa9e4186a53ebb33094aea2f80c3a748cc7f0&location=");
+                assertEquals(placement.getImageUrl(), "https://servedbyadbutler.com/default_banner.gif");
+                assertEquals(placement.getWidth(), 300);
+                assertEquals(placement.getHeight(), 250);
+                assertEquals(placement.getAltText(), "");
+                assertEquals(placement.getTarget(), "_blank");
+                assertEquals(placement.getTrackingPixel(), "https://servedbyadbutler.com/default_banner.gif?foo=bar&demo=fakepixel");
+                assertEquals(placement.getAccupixelUrl(), "https://servedbyadbutler.com/adserve.ibs/;ID=153105;size=1x1;type=pixel;setID=214764;plid=543820;BID=519401954;wt=1482382947;rnd=68251");
+                assertEquals(placement.getRefreshUrl(), "");
+                assertEquals(placement.getRefreshTime(), "");
+                assertEquals(placement.getBody(), "");
+            }
+        }
 
         server.shutdown();
     }

@@ -88,6 +88,8 @@ Placement placement;
 placement.recordImpression()
 ```
 
+The best practice for recording impressions is to do so when the placement is visible on the screen / has been seen by the user.
+
 ### Record Click
 
 Similarly, you can record click for a `Placement`:
@@ -96,10 +98,6 @@ Similarly, you can record click for a `Placement`:
 Placement placement;
 placement.recordClick()
 ```
-
-### Best Practice for Recording
-
-The best practice is to record impression at the time when placement is actually visible on the screen; and record click when it is actually tapped.
 
 ## Sample Project
 

@@ -97,7 +97,8 @@ public class Placement {
         AdButler adButler = new AdButler();
         if (getAccupixelUrl() != null) {
             adButler.requestPixel(getAccupixelUrl());
-        } else if (getTrackingPixel() != null) {
+        }
+        if (getTrackingPixel() != null) {
             adButler.requestPixel(getTrackingPixel());
         }
     }

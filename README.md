@@ -25,8 +25,6 @@ dependencies {
 
 ## Usage
 
-Please refer to https://adbutler.com/docs/api for up-to-date API documentation.
-
 ### Requesting Single Placement
 
 To request a placement, you can build an instance of `PlacementRequestConfig` and specify the attributes you want to send:

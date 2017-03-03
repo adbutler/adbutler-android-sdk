@@ -103,4 +103,4 @@ Please check out the `sample` project inside this repository to see more sample 
 
 # License
 
-This SDK is released under the Apache 2.0 license. See [LICENSE](https://github.com/sparklit/adbutler-android-sdk/tree/master/LICENSE) for more information.
+This SDK is released under the Apache 2.0 license. See [LICENSE](https://github.com/adbutler/adbutler-android-sdk/tree/master/LICENSE) for more information.

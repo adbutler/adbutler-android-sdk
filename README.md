@@ -27,7 +27,8 @@ dependencies {
 
 ### Requesting Single Placement
 
-To request a placement, you can build an instance of `PlacementRequestConfig` and specify the attributes you want to send:
+To request a placement, you can build an instance of `PlacementRequestConfig` and specify the attributes you want to send.
+The builder accepts the AdButler account ID, the zone ID, the width of the zone, and the height of the zone in the same sequence as mentioned. In the following example, 153105 is the AdButler account ID, 214764 is the zone ID, 300 is the zone width, and 250 is the zone height.
 
 ```java
 PlacementRequestConfig config = new PlacementRequestConfig.Builder(153105, 214764, 300, 250).build();

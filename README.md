@@ -19,7 +19,7 @@ And then, add the dependency
 
 ```groovy
 dependencies {
-	compile 'com.github.sparklit:adbutler-android-sdk:1.0'
+	implementation 'com.github.adbutler:adbutler-android-sdk:1.0.2'
 }
 ```
 

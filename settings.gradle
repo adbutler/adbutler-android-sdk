@@ -1,1 +1,1 @@
-include ':sdk', ':sample'
+include ':sample', ':adbutler-android-sdk'

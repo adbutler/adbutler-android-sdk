@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onGetInterstitialClick(View view){
         interstitial = new Interstitial();
-        AdRequest request = new AdRequest(172084, 349510);
+        AdRequest request = new AdRequest(50088, 354135);
         request.setCoppa(0);
         request.setAge(30);
         request.setGender(getUserGender());
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     public void onGetBannerClick(View view){
         FragmentManager fm = getFragmentManager();
         bannerView = (BannerView)fm.findFragmentById(R.id.adbutler_fragment);
-        AdRequest request = new AdRequest(172084, 349510);
+        AdRequest request = new AdRequest(50088, 354134);
         request.setCoppa(0);
         request.setAge(30);
         request.setGender(getUserGender());

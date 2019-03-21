@@ -1,5 +1,6 @@
 package com.sparklit.adbutler;
 
+import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
@@ -47,9 +49,14 @@ public class InterstitialActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.setContentView(R.layout.activity_interstitial);
+
         instance = this;
+        init();
+    }
+
+    public void init(){
         mraidHandler = Interstitial.getInstance().getMRAIDHandler();
-        if(mraidHandler.orientationProperties.forceOrientation != null){
+        if(mraidHandler != null && mraidHandler.orientationProperties.forceOrientation != null){
             if(mraidHandler.orientationProperties.forceOrientation.equals(Orientations.LANDSCAPE)){
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             }
@@ -63,15 +70,27 @@ public class InterstitialActivity extends AppCompatActivity {
 
         root = findViewById(R.id.webViewContainer);
         root.removeAllViews();
+
+        //TODO
+        // we made the activity instance static so we can access its functions from the Interstitial class.
+        // change this in the future so that the interstitial activity has all of the mraid handling inside it, rather than the interstitial class.
+        // for now, remove the old instance of the interstitial activity, in case the app loses focus and needs to recreate this activity.
         webView = Interstitial.getInstance().getWebView();
+        if(webView.getParent() != null){
+            ViewGroup parent = (ViewGroup)webView.getParent();
+            parent.removeView(webView);
+            ((Activity)parent.getContext()).finish();
+        }
+
         root.addView(webView);
         Interstitial.getInstance().shown = true;
         initializeCloseButton();
         recordImpression();
-        Interstitial.getInstance().getMRAIDHandler().setMRAIDIsVisible(true);
-        Interstitial.getInstance().getMRAIDHandler().fireMRAIDEvent(Events.VIEWABLE_CHANGE, "true");
+        if(mraidHandler != null){
+            mraidHandler.setMRAIDIsVisible(true);
+            mraidHandler.fireMRAIDEvent(Events.VIEWABLE_CHANGE, "true");
+        }
     }
-
 
     void initializeCloseButton(){
         FrameLayout item = findViewById(R.id.btnBackground);

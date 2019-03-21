@@ -56,8 +56,6 @@ public class Interstitial implements MRAIDListener {
         instance = this;
     }
 
-
-
     public void initialize(AdRequest request, Context context, AdListener listener){
         if(!shown){
             this.context = context;
@@ -83,13 +81,18 @@ public class Interstitial implements MRAIDListener {
                     return;
                 }
 
-                if(body.indexOf("mraid.js") > 0){
+                if(body.equals("") && !placement.getImageUrl().equals("")){
+                    listener.onAdFetchSucceeded();
+                    initImageWebView(interstitial.placement);
+                }
+                else if(body.indexOf("mraid.js") > 0){
                     body = MRAIDUtilities.replaceMRAIDScript(body);
                     isMRAID = true;
+                    interstitial.htmlBody = MRAIDUtilities.validateHTMLStructure(body);
+                    listener.onAdFetchSucceeded();
+                    initWebView(htmlBody);
                 }
-                interstitial.htmlBody = MRAIDUtilities.validateHTMLStructure(body);
-                listener.onAdFetchSucceeded();
-                initWebView(htmlBody);
+
             }
 
             @Override
@@ -141,6 +144,51 @@ public class Interstitial implements MRAIDListener {
         webView.loadDataWithBaseURL("http://servedbyadbutler.com", body, "text/html", "UTF-8", "");
     }
 
+    @SuppressLint("")
+    private void initImageWebView(Placement placement){
+
+        webView = new WebView(context);
+        webView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            webView.setId(Utilities.generateViewId());
+        } else {
+            webView.setId(View.generateViewId());
+        }
+        WebSettings settings = webView.getSettings();
+
+        webView.setSaveEnabled(true);
+        webView.setSaveFromParentEnabled(true);
+        settings.setJavaScriptEnabled(false);
+
+        // disable scrollbars
+        webView.setVerticalScrollBarEnabled(false);
+        webView.setHorizontalScrollBarEnabled(false);
+        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+
+
+        initTouchListener(webView);
+
+        initWebClient(webView);
+
+        webView.loadDataWithBaseURL("http://servedbyadbutler.com", getImageMarkup(placement), "text/html", "UTF-8", "");
+    }
+
+    private String getImageMarkup(Placement placement){
+        StringBuilder str = new StringBuilder();
+        str.append("<!DOCTYPE html>");
+        str.append("<html>");
+        str.append("<head>");
+        str.append("</head>");
+        str.append("<body style=\"padding:0; margin:0;\">");
+        str.append(String.format("<a href=\"%s\">", placement.getRedirectUrl()));
+        str.append(String.format("<img src=\"%s\" style=\"width:100%%; height:100%%;\" />", placement.getImageUrl()));
+        str.append("</a>");
+        str.append("</body>");
+        str.append("</html>");
+        return str.toString();
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private void initTouchListener(WebView view){
         view.setOnTouchListener(new View.OnTouchListener() {
@@ -189,9 +237,11 @@ public class Interstitial implements MRAIDListener {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                mraidHandler.initialize(view);
                 Rect fsRect = MRAIDUtilities.getFullScreenRectDP((Activity)context);
-                mraidHandler.setMRAIDCurrentPosition(new Rect(0,0,fsRect.width, fsRect.height));
+                if(mraidHandler != null){
+                    mraidHandler.initialize(view);
+                    mraidHandler.setMRAIDCurrentPosition(new Rect(0,0,fsRect.width, fsRect.height));
+                }
 
                 // allow for some javascript that may run in the ad content
                 // e.g. setting orientation properties, and then checking those same properties
@@ -322,7 +372,6 @@ public class Interstitial implements MRAIDListener {
 
     public void reportDOMSize(Size size) {
         // do nothing
-        int test = 0;
     }
 
     public void setOrientationProperties(OrientationProperties properties) {

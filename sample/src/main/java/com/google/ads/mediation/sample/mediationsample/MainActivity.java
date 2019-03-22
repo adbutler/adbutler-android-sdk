@@ -115,11 +115,122 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void onGetMRAIDInterstitialClick(View view){
+        interstitial = new Interstitial();
+        AdRequest request = new AdRequest(50088, 354196);
+        request.setCoppa(0);
+        request.setAge(30);
+        request.setGender(getUserGender());
+        request.setLocation(getUserLocation());
+        request.setBirthday(new Date());
+        interstitial.initialize(request, this, new AdListener() {
+            @Override
+            public void onAdFetchSucceeded() {
+                super.onAdFetchSucceeded();
+            }
+
+            @Override
+            public void onInterstitialReady(){
+                super.onInterstitialReady();
+                if(interstitial.isReady){
+                    interstitial.show();
+                }
+            }
+
+            @Override
+            public void onAdFetchFailed(ErrorCode code) {
+                super.onAdFetchFailed(code);
+            }
+
+            @Override
+            public void onInterstitialDisplayed() {
+                super.onInterstitialDisplayed();
+            }
+
+            @Override
+            public void onAdExpanded(){
+                super.onAdExpanded();
+            }
+
+            @Override
+            public void onAdResized(){
+                super.onAdResized();
+            }
+
+            @Override
+            public void onAdLeavingApplication(){
+                super.onAdLeavingApplication();
+            }
+
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+            }
+        });
+    }
+
 
     public void onGetBannerClick(View view){
         FragmentManager fm = getFragmentManager();
         bannerView = (BannerView)fm.findFragmentById(R.id.adbutler_fragment);
         AdRequest request = new AdRequest(50088, 354134);
+        request.setCoppa(0);
+        request.setAge(30);
+        request.setGender(getUserGender());
+        request.setLocation(getUserLocation());
+        request.setBirthday(new Date());
+        bannerView.initialize(request, Positions.BOTTOM_CENTER, this, new AdListener() {
+            @Override
+            public void onAdFetchSucceeded() {
+                super.onAdFetchSucceeded();
+            }
+
+            @Override
+            public void onAdFetchFailed(ErrorCode code) {
+                super.onAdFetchFailed(code);
+            }
+
+            @Override
+            public void onInterstitialDisplayed() {
+                super.onInterstitialDisplayed();
+            }
+
+            @Override
+            public void onAdExpanded(){
+                super.onAdExpanded();
+            }
+
+            @Override
+            public void onAdResized(){
+                super.onAdResized();
+            }
+
+            @Override
+            public void onAdLeavingApplication(){
+                super.onAdLeavingApplication();
+            }
+
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+            }
+        });
+    }
+
+    public void onGetMRAIDBannerClick(View view){
+        FragmentManager fm = getFragmentManager();
+        bannerView = (BannerView)fm.findFragmentById(R.id.adbutler_fragment);
+        AdRequest request = new AdRequest(50088, 354195);
         request.setCoppa(0);
         request.setAge(30);
         request.setGender(getUserGender());

@@ -30,7 +30,16 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:onClick="onGetInterstitialClick"
-            android:text="Get interstitial"
+            android:text="Get Interstitial"
+            />
+
+        <Button
+            android:id="@+id/btnGetMRAIDInterstitial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onGetMRAIDInterstitialClick"
+            android:text="Get MRAID Interstitial"
             />
 
         <Button
@@ -39,7 +48,16 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:onClick="onGetBannerClick"
-            android:text="Get banner"
+            android:text="Get Banner"
+            />
+
+        <Button
+            android:id="@+id/btnGetMRAIDBanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onGetMRAIDBannerClick"
+            android:text="Get MRAID Banner"
             />
 
         <FrameLayout android:id="@+id/adbutler_frame"

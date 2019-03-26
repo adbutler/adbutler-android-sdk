@@ -282,24 +282,33 @@ public class Banner implements MRAIDListener, HTTPGetListener {
     }
 
     public void addToRoot(){
+        container.setFitsSystemWindows(true);
         ViewGroup root = ((Activity)context).findViewById(android.R.id.content);
-        ViewParent curLowest = root.getParent();
-        ViewParent lowestViewGroup = root;
-        if(curLowest != null){
-            while(curLowest.getParent() != null){
-                curLowest = curLowest.getParent();
-                if(curLowest instanceof ViewGroup){
-                    lowestViewGroup = curLowest;
-                }
-            }
-        }else{
-            lowestViewGroup = root;
-        }
         removeFromParent();
-        ((ViewGroup)lowestViewGroup).addView(container);
+        root.addView(container);
         reposition();
         container.bringToFront();
     }
+
+//    public void addToDisplayRoot(){
+//        container.setFitsSystemWindows(false);
+//        ViewGroup root = ((Activity)context).findViewById(android.R.id.content);
+//        ViewParent curLowest = root.getParent();
+//        ViewParent lowestViewGroup = root;
+//        if(curLowest != null){
+//            while(curLowest.getParent() != null){
+//                curLowest = curLowest.getParent();
+//                if(curLowest instanceof ViewGroup){
+//                    lowestViewGroup = curLowest;
+//                }
+//            }
+//        }else{
+//            lowestViewGroup = root;
+//        }
+//        removeFromParent();
+//        ((ViewGroup)lowestViewGroup).addView(container);
+//        container.bringToFront();
+//    }
 
 
     public void setSize(Size rect){
@@ -359,12 +368,10 @@ public class Banner implements MRAIDListener, HTTPGetListener {
         if(!windowIsFullscreen){
             ((Activity)context).getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
-
-        Rect fsRect = MRAIDUtilities.getFullScreenRect((Activity)context);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(fsRect.width,fsRect.height);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT,FrameLayout.LayoutParams.FILL_PARENT);
         mraidHandler.activeWebView.setLayoutParams(params);
 
-        FrameLayout.LayoutParams containerParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams containerParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT, FrameLayout.LayoutParams.FILL_PARENT);
         containerParams.gravity = Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL;
         container.setLayoutParams(containerParams);
     }
@@ -588,20 +595,24 @@ public class Banner implements MRAIDListener, HTTPGetListener {
         int width = MRAIDUtilities.convertDpToPixel(properties.width, context);
         int height = MRAIDUtilities.convertDpToPixel(properties.height, context);
 
-        Rect fullscreen = MRAIDUtilities.getFullScreenRect((Activity)context);
+        android.graphics.Rect rect = new android.graphics.Rect();
+
+        ViewGroup root = ((Activity)context).findViewById(android.R.id.content);
+        root.getDrawingRect(rect);
+
         Rect destinationRect = new Rect(xypos[0] + offsetX, xypos[1] + offsetY, width, height);
         if(!properties.allowOffscreen){
             if(destinationRect.x < 0){
                 destinationRect.x = 0;
             }
-            if(destinationRect.x + destinationRect.width > fullscreen.width){
-                destinationRect.x = fullscreen.width - destinationRect.width;
+            if(destinationRect.x + destinationRect.width > rect.width()){
+                destinationRect.x = rect.width() - destinationRect.width;
             }
             if(destinationRect.y < 0){
                 destinationRect.y = 0;
             }
-            if(destinationRect.y + destinationRect.height > fullscreen.height){
-                destinationRect.y = fullscreen.height - destinationRect.height;
+            if(destinationRect.y + destinationRect.height > rect.height()){
+                destinationRect.y = rect.height() - destinationRect.height;
             }
         }
 

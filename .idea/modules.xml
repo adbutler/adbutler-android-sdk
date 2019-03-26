@@ -3,11 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AndroidSDK.iml" filepath="$PROJECT_DIR$/AndroidSDK.iml" />
-      <module fileurl="file://$PROJECT_DIR$/AndroidSDK_Old.iml" filepath="$PROJECT_DIR$/AndroidSDK_Old.iml" />
-      <module fileurl="file://$PROJECT_DIR$/adbutler-admob-sdk/adbutler-admob-sdk.iml" filepath="$PROJECT_DIR$/adbutler-admob-sdk/adbutler-admob-sdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/adbutler-android-sdk/adbutler-android-sdk.iml" filepath="$PROJECT_DIR$/adbutler-android-sdk/adbutler-android-sdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sdk/sdk.iml" filepath="$PROJECT_DIR$/sdk/sdk.iml" />
     </modules>
   </component>
 </project>

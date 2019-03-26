@@ -279,6 +279,110 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void onGetMRAIDTwoPartBannerClick(View view){
+        FragmentManager fm = getFragmentManager();
+        bannerView = (BannerView)fm.findFragmentById(R.id.adbutler_fragment);
+        AdRequest request = new AdRequest(50088, 354716);
+        request.setCoppa(0);
+        request.setAge(30);
+        request.setGender(getUserGender());
+        request.setLocation(getUserLocation());
+        request.setBirthday(new Date());
+        bannerView.initialize(request, Positions.BOTTOM_CENTER, this, new AdListener() {
+            @Override
+            public void onAdFetchSucceeded() {
+                super.onAdFetchSucceeded();
+            }
+
+            @Override
+            public void onAdFetchFailed(ErrorCode code) {
+                super.onAdFetchFailed(code);
+            }
+
+            @Override
+            public void onInterstitialDisplayed() {
+                super.onInterstitialDisplayed();
+            }
+
+            @Override
+            public void onAdExpanded(){
+                super.onAdExpanded();
+            }
+
+            @Override
+            public void onAdResized(){
+                super.onAdResized();
+            }
+
+            @Override
+            public void onAdLeavingApplication(){
+                super.onAdLeavingApplication();
+            }
+
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+            }
+        });
+    }
+
+    public void onGetMRAIDResizableBannerClick(View view){
+        FragmentManager fm = getFragmentManager();
+        bannerView = (BannerView)fm.findFragmentById(R.id.adbutler_fragment);
+        AdRequest request = new AdRequest(50088, 354715);
+        request.setCoppa(0);
+        request.setAge(30);
+        request.setGender(getUserGender());
+        request.setLocation(getUserLocation());
+        request.setBirthday(new Date());
+        bannerView.initialize(request, Positions.BOTTOM_CENTER, this, new AdListener() {
+            @Override
+            public void onAdFetchSucceeded() {
+                super.onAdFetchSucceeded();
+            }
+
+            @Override
+            public void onAdFetchFailed(ErrorCode code) {
+                super.onAdFetchFailed(code);
+            }
+
+            @Override
+            public void onInterstitialDisplayed() {
+                super.onInterstitialDisplayed();
+            }
+
+            @Override
+            public void onAdExpanded(){
+                super.onAdExpanded();
+            }
+
+            @Override
+            public void onAdResized(){
+                super.onAdResized();
+            }
+
+            @Override
+            public void onAdLeavingApplication(){
+                super.onAdLeavingApplication();
+            }
+
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+            }
+        });
+    }
+
     // dummy gender
     public int getUserGender() {
         Random rand = new Random();

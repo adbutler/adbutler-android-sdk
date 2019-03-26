@@ -57,7 +57,25 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:onClick="onGetMRAIDBannerClick"
-            android:text="Get MRAID Banner"
+            android:text="Get MRAID Expandable Banner"
+            />
+
+        <Button
+            android:id="@+id/btnGetMRAIDTwoPartBanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onGetMRAIDTwoPartBannerClick"
+            android:text="Get MRAID 2 Part Expandable Banner"
+            />
+
+        <Button
+            android:id="@+id/btnGetMRAIDResizableBanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="onGetMRAIDResizableBannerClick"
+            android:text="Get MRAID Resizable Banner"
             />
 
         <FrameLayout android:id="@+id/adbutler_frame"

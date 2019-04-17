@@ -163,7 +163,8 @@ public class Banner implements MRAIDListener, HTTPGetListener {
 
         // if we know the size, set it
         if(placement.getWidth() != 0 && placement.getHeight() != 0){
-            setSize(new Size(placement.getWidth(), placement.getHeight()));
+            defaultSize = new Size(placement.getWidth(), placement.getHeight());
+            setSize(defaultSize);
         }else{
             currentWebViewLayout = new FrameLayout.LayoutParams(0,0);
             currentContainerLayout = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);

@@ -11,6 +11,15 @@ public class VASTVideo {
     private int publisherID;
     private String poster;
     private List<Source> sources;
+    private static VASTListener listenerInstance;
+
+    private void setListenerInstance(VASTListener listener){
+        VASTVideo.listenerInstance = listener;
+    }
+
+    protected static VASTListener getListenerInstance(){
+        return VASTVideo.listenerInstance;
+    }
 
     private class Source {
         protected String source;
@@ -22,11 +31,12 @@ public class VASTVideo {
         }
     }
 
-    public VASTVideo(Context context, int zoneID, int accountID, int publisherID){
+    public VASTVideo(Context context, int zoneID, int accountID, int publisherID, VASTListener listener){
         this.context = context;
         this.zoneID = zoneID;
         this.accountID = accountID;
         this.publisherID = publisherID;
+        setListenerInstance(listener);
     }
 
     public void addSoure(String source, String type){
@@ -58,7 +68,7 @@ public class VASTVideo {
                     str.append("data-setup='{ ");
                         str.append("\"plugins\": { ");
                             str.append("\"vastClient\": { ");
-                                str.append(String.format("\"adTagUrl\": \"https://servedbyadbutler.com/vast.spark?setID=%d&ID=%d&pid=%d\", ", this.zoneID, this.accountID, this.publisherID));
+                                str.append(String.format("\"adTagUrl\": \"https://servedbyadbutler.com/vasttemp.spark?setID=%d&ID=%d&pid=%d\", ", this.zoneID, this.accountID, this.publisherID));
                                 str.append("\"adCancelTimeout\": 5000, ");
                                 str.append("\"adsEnabled\": true ");
                             str.append("} ");

@@ -28,6 +28,8 @@ import com.sparklit.adbutler.Interstitial;
 import com.sparklit.adbutler.AdListener;
 import com.sparklit.adbutler.ErrorCode;
 import com.sparklit.adbutler.AdButler;
+import com.sparklit.adbutler.VASTVideo;
+import com.sparklit.adbutler.VASTListener;
 
 import java.util.Date;
 import java.util.Random;
@@ -381,6 +383,107 @@ public class MainActivity extends AppCompatActivity {
                 super.onAdClicked();
             }
         });
+    }
+
+    public void onGetVASTClick(View view){
+        VASTVideo vast = new VASTVideo(this, 174812, 6792, 61936, new VASTListener() {
+            @Override
+            public void onMute() {
+                System.out.println("mute");
+                super.onMute();
+            }
+
+            @Override
+            public void onUnmute() {
+                System.out.println("unmute");
+                super.onUnmute();
+            }
+
+            @Override
+            public void onPause() {
+                System.out.println("pause");
+                super.onPause();
+            }
+
+            @Override
+            public void onResume() {
+                System.out.println("resume");
+                super.onResume();
+            }
+
+            @Override
+            public void onRewind() {
+                System.out.println("rewind");
+                super.onRewind();
+            }
+
+            @Override
+            public void onSkip() {
+                System.out.println("skip");
+                super.onSkip();
+            }
+
+            @Override
+            public void onPlayerExpand() {
+                System.out.println("playerExpand");
+                super.onPlayerExpand();
+            }
+
+            @Override
+            public void onPlayerCollapse() {
+                System.out.println("playerCollapse");
+                super.onPlayerCollapse();
+            }
+
+            @Override
+            public void onNotUsed() {
+                System.out.println("notUsed");
+                super.onNotUsed();
+            }
+
+            @Override
+            public void onLoaded() {
+                System.out.println("loaded");
+                super.onLoaded();
+            }
+
+            @Override
+            public void onStart() {
+                System.out.println("start");
+                super.onStart();
+            }
+
+            @Override
+            public void onFirstQuartile() {
+                System.out.println("firstQuartile");
+                super.onFirstQuartile();
+            }
+
+            @Override
+            public void onMidpoint() {
+                System.out.println("midpoint");
+                super.onMidpoint();
+            }
+
+            @Override
+            public void onThirdQuartile() {
+                System.out.println("thirdQuartile");
+                super.onThirdQuartile();
+            }
+
+            @Override
+            public void onComplete() {
+                System.out.println("complete");
+                super.onComplete();
+            }
+
+            @Override
+            public void onCloseLinear() {
+                System.out.println("closeLinear");
+                super.onCloseLinear();
+            }
+        });
+        vast.play();
     }
 
     // dummy gender

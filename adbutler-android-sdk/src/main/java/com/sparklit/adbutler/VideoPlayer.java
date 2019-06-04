@@ -110,7 +110,7 @@ public class VideoPlayer extends AppCompatActivity implements HTTPGetListener {
             webView.loadUrl(url);
         }
         else if(body != null){
-            webView.loadDataWithBaseURL("http://ssp-r.phunware.com", body, "text/html; charset=utf-8", "UTF-8", "");
+            webView.loadDataWithBaseURL("http://servedbyadbutler.com", body, "text/html; charset=utf-8", "UTF-8", "");
         }
 
     }
@@ -127,7 +127,7 @@ public class VideoPlayer extends AppCompatActivity implements HTTPGetListener {
                     parseVASTContent(xml);
                 }
                 catch(UnsupportedEncodingException ex){
-                    Log.e("\"Ads/Phunware\"", "Unsupported encoding on VAST XML");
+                    Log.e("\"Ads/AdButler\"", "Unsupported encoding on VAST XML");
                 }
                 return false;
             }
@@ -251,8 +251,7 @@ public class VideoPlayer extends AppCompatActivity implements HTTPGetListener {
 
 
     private void parseVASTContent(String str){
-        final String body = str;
-        // deserialize
+        // only need to get the skip offset currently
         try{
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -266,7 +265,7 @@ public class VideoPlayer extends AppCompatActivity implements HTTPGetListener {
                 }
             }
         }catch(Exception ex){
-            System.out.println("AB - Problem finding end card companion.");
+
         }
     }
 

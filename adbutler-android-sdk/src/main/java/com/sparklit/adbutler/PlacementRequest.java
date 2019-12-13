@@ -8,8 +8,17 @@ import android.webkit.WebView;
 
 import java.util.Calendar;
 
+/**
+ * If you want to get the placement directly, and create your own way of displaying them, you can do so using this object.
+ */
 public class PlacementRequest {
-
+    /**
+     * Creates a PlacementRequest
+     * @param request AdRequest object containing all required mediation data.
+     * @param context The context from which the ad request will be made.
+     * @param listener A delegate containing event functions for the ad to call.
+     * @param placementListener A delegate overriding the success or failure methods of the request.
+     */
     public PlacementRequest(AdRequest request, Context context, AdListener listener, PlacementResponseListener placementListener){
         Log.d("Ads/AdButler", "AdButler AdMob SDK v" + BuildConfig.VERSION_NAME + " - Beginning Ad Fetch");
 
@@ -34,9 +43,7 @@ public class PlacementRequest {
 
         // Gather required info now that we know we need it.
 
-        AdButler AdButlerSDK = AdButler.getInstance();
-//        AdButlerSDK.setApiHostname("adbutler-fermion.com");
-//        AdButlerSDK.setApiAppVersion("adserve-p");
+        AdButler sdk = AdButler.getInstance();
 
         AppInfo appInfo = new AppInfo();
         appInfo.initialize(context);
@@ -98,7 +105,6 @@ public class PlacementRequest {
         PlacementRequestConfig.Builder requestBuilder = new PlacementRequestConfig.Builder(request.getAccountID(), request.getZoneID());
 
         // Proper User Agent
-        // TODO pass webview in?
         requestBuilder.setUserAgent(new WebView(context).getSettings().getUserAgentString());
 
         // Advertising ID & DNT
@@ -173,6 +179,6 @@ public class PlacementRequest {
         final PlacementRequestConfig config = requestBuilder.build();
 
         Log.d("Ads/AdButler", "Requesting ad from AdButler...");
-        AdButlerSDK.requestPlacement(config, placementListener);
+        sdk.requestPlacement(config, placementListener);
     }
 }

@@ -17,7 +17,6 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceError;
@@ -29,7 +28,10 @@ import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import java.util.Calendar;
 
-public class Banner implements MRAIDListener, HTTPGetListener {
+/**
+ * A Banner ad.  Can be an MRAID or standard Image ad.
+ */
+class Banner implements MRAIDListener, HTTPGetListener {
     private ViewGroup container; // use a single common parent to persist whatever is inside on screen rotations.  eg. close button, secondary webview.
     private WebView webView;
     private WebView webViewExpanded;
@@ -65,17 +67,38 @@ public class Banner implements MRAIDListener, HTTPGetListener {
         bannerView = bv;
     }
 
-    public void initialize(AdRequest request, View view, Context context, AdListener listener, Fragment fragment){
-        providedView = view;
-        initCommon(request, context, listener, fragment);
-    }
+//    /**
+//     * Initintializes a banner by passing it a pre existing view.  This is a future feature and is currently unused.
+//     *
+//     * @param request
+//     * @param view
+//     * @param context
+//     * @param listener
+//     * @param fragment
+//     */
+//    public void initialize(AdRequest request, View view, Context context, AdListener listener, Fragment fragment){
+//        providedView = view;
+//        initCommon(request, context, listener, fragment);
+//    }
 
+    /**
+     * Initialize the banner.  It will be displayed immediately.
+     *
+     * @param request AdRequest object containing all of the required mediation data.
+     * @param position Position constant.  Determines where the banner will appear.   I.E. "bottom-center"
+     * @param context Context from which the ad is being requested.
+     * @param listener A delegate containing event functions for the ad to call.
+     * @param fragment The fragment in which to place the ad content.  (Required to decouple expanding ads from other content in the parent view)
+     */
     public void initialize(AdRequest request, String position, Context context, AdListener listener, Fragment fragment){
         this.position = position;
         absolutePositioned = true;
         initCommon(request, context, listener, fragment);
     }
 
+    /**
+     * Destroys the banner view.
+     */
     public void destroy(){
         container.removeAllViews();
         webView = null;
@@ -84,10 +107,13 @@ public class Banner implements MRAIDListener, HTTPGetListener {
         if(container.getParent() != null) {
             ((ViewGroup) container.getParent()).removeView(container);
         }
+        if(mraidHandler != null){
+            mraidHandler = null;
+        }
         container = null;
     }
 
-    public void initCommon(AdRequest request, Context context, AdListener listener, Fragment fragment){
+    private void initCommon(AdRequest request, Context context, AdListener listener, Fragment fragment){
         this.context = context;
         this.fragment = fragment;
         this.container = new FrameLayout(context);
@@ -101,7 +127,7 @@ public class Banner implements MRAIDListener, HTTPGetListener {
         new PlacementRequest(request, context, listener, getResponseListener());
     }
 
-    public View getWebView(){
+    protected View getWebView(){
         if(absolutePositioned){
             // when a fragment is reloaded, it must return a view. We don't want to return our content here, because then it would go
             // wherever the fragment is located on screen.  Instead we return an empty placeholder, then programmatically add our content to the root (Decor) view.
@@ -113,7 +139,7 @@ public class Banner implements MRAIDListener, HTTPGetListener {
         }
     }
 
-    public MRAIDHandler getMRAIDHandler(){
+    protected MRAIDHandler getMRAIDHandler(){
         return mraidHandler;
     }
 
@@ -122,7 +148,13 @@ public class Banner implements MRAIDListener, HTTPGetListener {
         return new PlacementResponseListener() {
             @Override
             public void success(PlacementResponse response) {
-                placement = response.getPlacements().get(0);
+                try{
+                    placement = response.getPlacements().get(0);
+                }catch(IndexOutOfBoundsException ex){
+                    banner.listener.onAdFetchFailed(ErrorCode.NO_INVENTORY);
+                    return;
+                }
+
                 if(placement == null){
                     banner.listener.onAdFetchFailed(ErrorCode.NO_INVENTORY);
                     return;
@@ -153,6 +185,9 @@ public class Banner implements MRAIDListener, HTTPGetListener {
     @SuppressLint("SetJavaScriptEnabled")
     private void initWebView(String body){
         webView = new WebView(context);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            webView.setWebContentsDebuggingEnabled(true);
+        }
         mraidHandler = new MRAIDHandler(this, context, fragment);
         if(!placement.getImageUrl().equals("")){
             initWebViewImage(webView, placement.getImageUrl());
@@ -262,9 +297,9 @@ public class Banner implements MRAIDListener, HTTPGetListener {
         mraidHandler.setMRAIDSizeChanged();
     }
 
-    public void removeFromParent(){
+    protected void removeFromParent(){
         // if resized and removed from parent, set normal dimensions (rotated screen)
-        if(mraidHandler.state == States.RESIZED){
+        if(mraidHandler != null && mraidHandler.state == States.RESIZED){
             setSize(new Size(defaultRect.width, defaultRect.height));
             mraidHandler.setMRAIDState(States.DEFAULT);
         }
@@ -273,7 +308,7 @@ public class Banner implements MRAIDListener, HTTPGetListener {
         }
     }
 
-    public void reposition(){
+    protected void reposition(){
         if(mraidHandler.state.equals(States.EXPANDED)){
             setFullScreen();
         }else{
@@ -282,7 +317,7 @@ public class Banner implements MRAIDListener, HTTPGetListener {
         }
     }
 
-    public void addToRoot(){
+    protected void addToRoot(){
         container.setFitsSystemWindows(true);
         ViewGroup root = ((Activity)context).findViewById(android.R.id.content);
         removeFromParent();
@@ -291,28 +326,8 @@ public class Banner implements MRAIDListener, HTTPGetListener {
         container.bringToFront();
     }
 
-//    public void addToDisplayRoot(){
-//        container.setFitsSystemWindows(false);
-//        ViewGroup root = ((Activity)context).findViewById(android.R.id.content);
-//        ViewParent curLowest = root.getParent();
-//        ViewParent lowestViewGroup = root;
-//        if(curLowest != null){
-//            while(curLowest.getParent() != null){
-//                curLowest = curLowest.getParent();
-//                if(curLowest instanceof ViewGroup){
-//                    lowestViewGroup = curLowest;
-//                }
-//            }
-//        }else{
-//            lowestViewGroup = root;
-//        }
-//        removeFromParent();
-//        ((ViewGroup)lowestViewGroup).addView(container);
-//        container.bringToFront();
-//    }
 
-
-    public void setSize(Size rect){
+    protected void setSize(Size rect){
         // set layout parameters
         int width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, rect.width, context.getResources().getDisplayMetrics());
         int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, rect.height, context.getResources().getDisplayMetrics());
@@ -329,20 +344,25 @@ public class Banner implements MRAIDListener, HTTPGetListener {
         if(position.contains("top")){
             grav = grav | Gravity.TOP;
         }
+        if(position.contains("bottom")){
+            grav = grav | Gravity.BOTTOM;
+        }
         if(position.contains("left")){
             grav = grav | Gravity.LEFT;
         }
         if(position.contains("right")){
             grav = grav | Gravity.RIGHT;
         }
-        if(position.contains("bottom")){
-            grav = grav | Gravity.BOTTOM;
-        }
         if(position == Positions.CENTER){
             grav = grav | Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
         }
         else if(position.contains("center")){
-            grav = grav | Gravity.CENTER_HORIZONTAL;
+            if(!position.contains("top") && !position.contains("bottom")){
+                grav = grav | Gravity.CENTER_VERTICAL;
+            }
+            if(!position.contains("left") && !position.contains("right")){
+                grav = grav | Gravity.CENTER_HORIZONTAL;
+            }
         }
         if(position.contains("status-bar")){
             marginTop += getStatusBarHeight();
@@ -444,7 +464,7 @@ public class Banner implements MRAIDListener, HTTPGetListener {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if(url.contains("servedbyadbutler.com")|| url.contains("adbutler-fermion.com")){
+                if(url.contains("servedbyadbutler.com")){
                     return false;
                 }
                 else if(url.contains("mraid://")){

@@ -5,12 +5,20 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
-public class AppInfo {
+/**
+ * A class used to describe the app using the AdButler SDK
+ */
+class AppInfo {
 
     public String packageName;
     public String appName;
     public String appVersion;
 
+    /**
+     * Uses the context to retrieve the package details.
+     *
+     * @param context Source context.
+     */
     public void initialize(Context context) {
         appName = getApplicationName(context);
         packageName = context.getPackageName();

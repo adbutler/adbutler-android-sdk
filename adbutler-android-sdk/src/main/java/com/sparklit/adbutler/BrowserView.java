@@ -21,7 +21,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
-public class BrowserView extends AppCompatActivity {
+class BrowserView extends AppCompatActivity {
     WebView webView;
 
     @Override

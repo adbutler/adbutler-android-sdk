@@ -1,23 +1,23 @@
 package com.example.sdktester;
 
 import android.app.Activity;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
+
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.sparklit.adbutler.*;
 
-import java.text.ParseException;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,19 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnBottomLeft;
     private Button btnBottomCenter;
     private Button btnBottomRight;
-    HashMap<Button, String> positions = new HashMap<Button, String>() {
-        {
-            put(btnTopLeft, Positions.TOP_LEFT);
-            put(btnTopCenter, Positions.TOP_CENTER);
-            put(btnTopRight, Positions.TOP_RIGHT);
-            put(btnCenterLeft, Positions.LEFT_CENTER);
-            put(btnCenter, Positions.CENTER);
-            put(btnCenterRight, Positions.RIGHT_CENTER);
-            put(btnBottomLeft, Positions.BOTTOM_LEFT);
-            put(btnBottomCenter, Positions.BOTTOM_CENTER);
-            put(btnBottomRight, Positions.BOTTOM_RIGHT);
-        }
-    };
+    HashMap<Button, String> positions;
 
     private Button selectedPosition;
 
@@ -62,7 +50,12 @@ public class MainActivity extends AppCompatActivity {
     private int accountID;
     private int zoneID;
     private int publisherID;
-    private String position;
+    private String position = Positions.BOTTOM_CENTER;
+
+    private SDKConsumer sdk;
+    private InterstitialView interstitial;
+
+    private Spinner spinnerOrientations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,50 +63,292 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setupUI(findViewById(R.id.containerView));
 
-        btnGetBanner = (Button)findViewById(R.id.btnGetBanner);
-        btnGetInterstitial = (Button)findViewById(R.id.btnGetInterstitial);
-        btnGetVASTVideo = (Button)findViewById(R.id.btnGetVASTVideo);
-        btnDisplayInterstitial = (Button)findViewById(R.id.btnDisplayInterstitial);
-        btnDestroy = (Button)findViewById(R.id.btnDestroy);
+        btnGetBanner = findViewById(R.id.btnGetBanner);
+        btnGetInterstitial = findViewById(R.id.btnGetInterstitial);
+        btnGetVASTVideo = findViewById(R.id.btnGetVASTVideo);
+        btnDisplayInterstitial = findViewById(R.id.btnDisplayInterstitial);
+        btnDestroy = findViewById(R.id.btnDestroy);
 
-        btnTopLeft = (Button)findViewById(R.id.btnTopLeft);
-        btnTopCenter = (Button)findViewById(R.id.btnTopCenter);
-        btnTopRight = (Button)findViewById(R.id.btnTopRight);
-        btnCenterLeft = (Button)findViewById(R.id.btnCenterLeft);
-        btnCenter = (Button)findViewById(R.id.btnCenter);
-        btnCenterRight = (Button)findViewById(R.id.btnCenterRight);
-        btnBottomLeft = (Button)findViewById(R.id.btnBottomLeft);
-        btnBottomCenter = (Button)findViewById(R.id.btnBottomCenter);
-        btnBottomRight = (Button) findViewById(R.id.btnBottomRight);
+        btnTopLeft = findViewById(R.id.btnTopLeft);
+        btnTopCenter = findViewById(R.id.btnTopCenter);
+        btnTopRight = findViewById(R.id.btnTopRight);
+        btnCenterLeft = findViewById(R.id.btnCenterLeft);
+        btnCenter = findViewById(R.id.btnCenter);
+        btnCenterRight = findViewById(R.id.btnCenterRight);
+        btnBottomLeft = findViewById(R.id.btnBottomLeft);
+        btnBottomCenter = findViewById(R.id.btnBottomCenter);
+        btnBottomRight =  findViewById(R.id.btnBottomRight);
 
+        positions = new HashMap<Button, String>() {
+            {
+                put(btnTopLeft, Positions.TOP_LEFT);
+                put(btnTopCenter, Positions.TOP_CENTER);
+                put(btnTopRight, Positions.TOP_RIGHT);
+                put(btnCenterLeft, Positions.LEFT_CENTER);
+                put(btnCenter, Positions.CENTER);
+                put(btnCenterRight, Positions.RIGHT_CENTER);
+                put(btnBottomLeft, Positions.BOTTOM_LEFT);
+                put(btnBottomCenter, Positions.BOTTOM_CENTER);
+                put(btnBottomRight, Positions.BOTTOM_RIGHT);
+            }
+        };
 
+        btnDisplayInterstitial.setVisibility(View.INVISIBLE);
+        btnDestroy.setVisibility(View.INVISIBLE);
 
-        txtAccountID = (EditText) findViewById(R.id.txtAccountID);
-        txtZoneID = (EditText) findViewById(R.id.txtZoneID);
-        txtPublisherID = (EditText) findViewById(R.id.txtPublisherID);
-        txtLog = (TextView)findViewById(R.id.txtLog);
+        txtAccountID =  findViewById(R.id.txtAccountID);
+        txtZoneID =  findViewById(R.id.txtZoneID);
+        txtPublisherID =  findViewById(R.id.txtPublisherID);
+        txtLog = findViewById(R.id.txtLog);
 
         selectedPosition = btnBottomCenter;
+
+        spinnerOrientations = (Spinner)findViewById(R.id.spinOrientation);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.orientations, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerOrientations.setAdapter(adapter);
+
+        AdButler.initialize(this);
+        sdk = new SDKConsumer(this);
     }
 
-    protected void onGetBannerClick(View v){
-        validateInputs(false);
+    public void onGetBannerClick(View v){
+        if(!validateInputs(false)) return;
+        sdk.getBanner(accountID, zoneID, position, new AdListener() {
+            @Override
+            public void onAdFetchSucceeded() {
+                log("onAdFetchSucceded");
+                btnDestroy.setVisibility(View.VISIBLE);
+                super.onAdFetchSucceeded();
+            }
+
+            @Override
+            public void onAdFetchFailed(ErrorCode code) {
+                log("onAdFetchFailed");
+                super.onAdFetchFailed(code);
+            }
+
+            @Override
+            public void onAdExpanded(){
+                log("onAdExpanded");
+                super.onAdExpanded();
+            }
+
+            @Override
+            public void onAdResized(){
+                log("onAdResized");
+                super.onAdResized();
+            }
+
+            @Override
+            public void onAdLeavingApplication(){
+                log("onAdLeavingApplication");
+                super.onAdLeavingApplication();
+            }
+
+            @Override
+            public void onAdClosed() {
+                log("onAdClosed");
+                super.onAdClosed();
+            }
+
+            @Override
+            public void onAdClicked() {
+                log("onAdClicked");
+                super.onAdClicked();
+            }
+        });
     }
 
-    protected void onGetInterstitialClick(View v){
-        log("Long ass text.  super long.  too long man.  stop typing immediately.");
+    public void onGetInterstitialClick(View v){
+        if(!validateInputs(false)) return;
+        sdk.getInterstitial(accountID, zoneID, new AdListener() {
+            @Override
+            public void onAdFetchSucceeded() {
+                log("onAdFetchSucceeded");
+                super.onAdFetchSucceeded();
+            }
+
+            @Override
+            public void onInterstitialReady(){
+                log("onInterstitialReady");
+                btnDisplayInterstitial.setVisibility(View.VISIBLE);
+                super.onInterstitialReady();
+            }
+
+            @Override
+            public void onAdFetchFailed(ErrorCode code) {
+                log("onAdFetchFailed");
+                super.onAdFetchFailed(code);
+            }
+
+            @Override
+            public void onInterstitialDisplayed() {
+                log("onInterstitialDisplayed");
+                super.onInterstitialDisplayed();
+            }
+
+            @Override
+            public void onAdExpanded(){
+                log("onAdExpanded");
+                super.onAdExpanded();
+            }
+
+            @Override
+            public void onAdResized(){
+                log("onAdResized");
+                super.onAdResized();
+            }
+
+            @Override
+            public void onAdLeavingApplication(){
+                log("onAdLeavingApplication");
+                super.onAdLeavingApplication();
+            }
+
+            @Override
+            public void onAdClosed() {
+                log("onAdClosed");
+                super.onAdClosed();
+            }
+
+            @Override
+            public void onAdClicked() {
+                log("onAdClicked");
+                super.onAdClicked();
+            }
+        });
     }
 
-    protected void onGetVASTVideoClick(View v){
+    public void onGetVASTVideoClick(View v){
+        if(!validateInputs(true)) return;
+        log("Retrieving VAST video.  Will autoplay once ready.");
+        sdk.getVASTVideo(accountID, zoneID, publisherID, spinnerOrientations.getSelectedItem().toString(), new VASTListener() {
+            @Override
+            public void onMute() {
+                log("VAST :: onMute");
+                super.onMute();
+            }
 
+            @Override
+            public void onUnmute() {
+                log("VAST :: onUnmute");
+                super.onUnmute();
+            }
+
+            @Override
+            public void onPause() {
+                log("VAST :: onPause");
+                super.onPause();
+            }
+
+            @Override
+            public void onResume() {
+                log("VAST :: onResume");
+                super.onResume();
+            }
+
+            @Override
+            public void onRewind() {
+                log("VAST :: onRewind");
+                super.onRewind();
+            }
+
+            @Override
+            public void onSkip() {
+                log("VAST :: onSkip");
+                super.onSkip();
+            }
+
+            @Override
+            public void onPlayerExpand() {
+                log("VAST :: onPlayerExpand");
+                super.onPlayerExpand();
+            }
+
+            @Override
+            public void onPlayerCollapse() {
+                log("VAST :: onPlayerCollapse");
+                super.onPlayerCollapse();
+            }
+
+            @Override
+            public void onNotUsed() {
+                log("VAST :: onNotUsed");
+                super.onNotUsed();
+            }
+
+            @Override
+            public void onLoaded() {
+                log("VAST :: onLoaded");
+                super.onLoaded();
+            }
+
+            @Override
+            public void onStart() {
+                log("VAST :: onStart");
+                super.onStart();
+            }
+
+            @Override
+            public void onFirstQuartile() {
+                log("VAST :: onFirstQuartile");
+                super.onFirstQuartile();
+            }
+
+            @Override
+            public void onMidpoint() {
+                log("VAST :: onMidpoint");
+                super.onMidpoint();
+            }
+
+            @Override
+            public void onThirdQuartile() {
+                log("VAST :: onThirdQuartile");
+                super.onThirdQuartile();
+            }
+
+            @Override
+            public void onComplete() {
+                log("VAST :: onComplete");
+                super.onComplete();
+            }
+
+            @Override
+            public void onCloseLinear() {
+                log("VAST :: onCloseLinear");
+                super.onCloseLinear();
+            }
+
+            @Override
+            public void onClose(){
+                log("VAST :: onClose");
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+            }
+
+            @Override
+            public void onReady(){
+                log("VAST :: onReady");
+                sdk.displayVASTVideo();
+            }
+
+            @Override
+            public void onError(){
+                log("VAST :: onError");
+            }
+        });
     }
 
-    protected void onDisplayInterstitialClick(View v){
-
+    public void onDisplayInterstitialClick(View v){
+        if(sdk.interstitial != null && sdk.interstitial.isReady){
+            sdk.interstitial.show();
+            btnDisplayInterstitial.setVisibility(View.INVISIBLE);
+        }
     }
 
-    protected void onDestroyClick(View v){
-
+    public void onDestroyClick(View v){
+        sdk.destroyBanner();
+        btnDestroy.setVisibility(View.INVISIBLE);
     }
 
     private Boolean validateInputs(Boolean includePublisher){
@@ -163,7 +398,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    protected void onPositionClick(View v){
+    public void onPositionClick(View v){
         selectedPosition.setBackgroundResource(R.color.colorPrimaryDark);
         selectedPosition = (Button)v;
         selectedPosition.setBackgroundResource(R.color.colorPrimary);
@@ -178,6 +413,8 @@ public class MainActivity extends AppCompatActivity {
         }
         txtLog.setText(logBuilder.toString());
     }
+
+
 
     // thanks https://stackoverflow.com/questions/4165414/how-to-hide-soft-keyboard-on-android-after-clicking-outside-edittext
     public void setupUI(View view) {
@@ -205,7 +442,8 @@ public class MainActivity extends AppCompatActivity {
         InputMethodManager inputMethodManager =
                 (InputMethodManager) activity.getSystemService(
                         Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(
-                activity.getCurrentFocus().getWindowToken(), 0);
+        if(activity.getCurrentFocus() != null){
+            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+        }
     }
 }

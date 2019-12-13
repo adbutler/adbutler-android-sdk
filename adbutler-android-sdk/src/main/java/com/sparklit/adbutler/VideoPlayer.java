@@ -1,7 +1,10 @@
 package com.sparklit.adbutler;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.Rect;
@@ -13,36 +16,33 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.WindowManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 public class VideoPlayer extends AppCompatActivity implements HTTPGetListener {
     VideoEnabledWebView webView;
     VideoEnabledWebChromeClient webChromeClient;
     VASTListener listener;
+    VASTCompanion endCard;
     AppCompatActivity me = this;
+
 
     private TextView closeButton;
     private boolean closeButtonVisible = false;
+
+    long tapTime;
+    long releaseTime;
+    long tapDelay = 200; // 200 milliseconds or less counts as a click
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +50,23 @@ public class VideoPlayer extends AppCompatActivity implements HTTPGetListener {
         setContentView(R.layout.video_player);
         String url = getIntent().getStringExtra("URL");
         String body = getIntent().getStringExtra("BODY");
+        boolean preloaded = getIntent().getBooleanExtra("PRELOADED", false);
+        boolean closeButtonRequired = getIntent().getBooleanExtra("CLOSEBUTTONREQUIRED", true);
         listener = VASTVideo.getListenerInstance();
-        // Save the web view
-        webView = findViewById(R.id.webView);
+
+        if(preloaded){
+            webView = findViewById(R.id.webView);
+            ViewParent parent = webView.getParent();
+            ((ViewGroup)parent).removeView(webView);
+            webView = VASTVideo.getWebView();
+            webView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            ((ViewGroup)parent).addView(webView);
+            //((ViewGroup) this.findViewById(android.R.id.content)).addView(webView);
+            //addContentView(webView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        }else {
+            // Save the web view
+            webView = findViewById(R.id.webView);
+        }
         // Initialize the VideoEnabledWebChromeClient and set event handlers
         View nonVideoLayout = findViewById(R.id.nonVideoLayout); // Your own view, read class comments
         ViewGroup videoLayout = findViewById(R.id.videoLayout); // Your own view, read class comments
@@ -66,7 +80,6 @@ public class VideoPlayer extends AppCompatActivity implements HTTPGetListener {
             {
 
             }
-
         };
         webChromeClient.setOnToggledFullscreen(new VideoEnabledWebChromeClient.ToggledFullscreenCallback()
         {
@@ -105,14 +118,19 @@ public class VideoPlayer extends AppCompatActivity implements HTTPGetListener {
         // Call private class InsideWebViewClient
         webView.setWebViewClient(new InsideWebViewClient());
 
-        // Navigate anywhere you want, but consider that this classes have only been tested on YouTube's mobile site
-        if(url != null){
-            webView.loadUrl(url);
+        if(!preloaded){
+            if(url != null){
+                webView.loadUrl(url);
+            }
+            else if(body != null){
+                webView.loadDataWithBaseURL("http://servedbyadbutler.com", body, "text/html; charset=utf-8", "UTF-8", "");
+            }
+        }else{
+            if(closeButtonRequired){
+                initializeCloseButton();
+            }
+            webView.loadUrl("javascript:document.getElementById('av_video').player.play();");
         }
-        else if(body != null){
-            webView.loadDataWithBaseURL("http://servedbyadbutler.com", body, "text/html; charset=utf-8", "UTF-8", "");
-        }
-
     }
 
     private class InsideWebViewClient extends WebViewClient {
@@ -120,18 +138,7 @@ public class VideoPlayer extends AppCompatActivity implements HTTPGetListener {
         // Force links to be opened inside WebView and not in Default Browser
         // Thanks http://stackoverflow.com/a/33681975/1815624
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if(url.contains("vast://vastresponse?xml=")){
-                String raw = url.replace("vast://vastresponse?xml=", "");
-                try {
-                    String xml = URLDecoder.decode(raw, "UTF-8");
-                    parseVASTContent(xml);
-                }
-                catch(UnsupportedEncodingException ex){
-                    Log.e("\"Ads/AdButler\"", "Unsupported encoding on VAST XML");
-                }
-                return false;
-            }
-            else if(url.contains("vast://")){
+            if(url.contains("vast://")){
                 handleEvent(url);
                 return false;
             }
@@ -167,7 +174,19 @@ public class VideoPlayer extends AppCompatActivity implements HTTPGetListener {
                 break;
             case "skip":
                 listener.onSkip();
-                finish();
+                endCard = VASTVideo.getEndCard();
+                if(endCard != null && (endCard.staticResource != null || endCard.htmlResource != null)){
+                    runOnUiThread(new Runnable(){
+                        @Override
+                        public void run(){
+                            displayEndCard();
+                        }
+                    });
+                } else {
+                    listener.onClose();
+                    finish();
+                    overridePendingTransition(0,0);
+                }
                 break;
             case "playerExpand":
                 listener.onPlayerExpand();
@@ -198,75 +217,100 @@ public class VideoPlayer extends AppCompatActivity implements HTTPGetListener {
 //                break;
             case "complete":
                 listener.onComplete();
-                finish();
+                endCard = VASTVideo.getEndCard();
+                if(endCard != null && (endCard.staticResource != null || endCard.htmlResource != null)){
+                    runOnUiThread(new Runnable(){
+                        @Override
+                        public void run(){
+                            displayEndCard();
+                        }
+                    });
+                } else{
+                    listener.onClose();
+                    finish();
+                    overridePendingTransition(0,0);
+                }
+
                 break;
             case "closeLinear":
                 listener.onCloseLinear();
                 break;
-//                                future additions
-//            case "creativeView":
-//                listener.onCreativeView();
-//                break;
-//            case "acceptInvitation":
-//                listener.onAcceptInvitation();
-//                break;
-//            case "adExpand":
-//                listener.onAdExpand();
-//                break;
-//            case "adCollapse":
-//                listener.onAdCollapse();
-//                break;
-//            case "minimize":
-//                listener.onMinimize();
-//                break;
-//            case "close":
-//                listener.onClose();
-//                break;
-//            case "overlayViewDuration":
-//                listener.onOverlayViewDuration();
-//                break;
+            case "close":
+                listener.onClose();
+                finish();
+                break;
+            case "ready":
+                listener.onReady();
         }
     }
 
     @Override
     public void onBackPressed()
     {
-        // Notify the VideoEnabledWebChromeClient, and handle it ourselves if it doesn't handle it
-        if (!webChromeClient.onBackPressed())
-        {
-            if(closeButtonVisible){
+        if(endCard == null){
+            // Notify the VideoEnabledWebChromeClient, and handle it ourselves if it doesn't handle it
+            if (!webChromeClient.onBackPressed())
+            {
+                if(closeButtonVisible){
 
-            }
-            else if (webView.canGoBack())
-            {
-                webView.goBack();
-            }
-            else
-            {
-                // Standard back button implementation (for example this could close the app)
-                super.onBackPressed();
+                }
+                else if (webView.canGoBack())
+                {
+                    webView.goBack();
+                }
+                else
+                {
+                    // Standard back button implementation (for example this could close the app)
+                    super.onBackPressed();
+                }
             }
         }
     }
 
 
-    private void parseVASTContent(String str){
-        // only need to get the skip offset currently
-        try{
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(new InputSource(new StringReader(str)));
-
-            NodeList nodes = doc.getElementsByTagName("Linear");
-            if(nodes.getLength() > 0){
-                Node offset = nodes.item(0).getAttributes().getNamedItem("skipoffset");
-                if(offset == null){
-                    initializeCloseButton();
+    @SuppressLint("ClickableViewAccessibility")
+    private void displayEndCard(){
+        String markup = getEndCardMarkup();
+        webView.loadDataWithBaseURL("https://servedbyadbutler.com", markup,"text/html; charset=utf-8", "UTF-8", "");
+        Iterator i = endCard.trackingEvents.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry keyVal = (Map.Entry)i.next();
+            if(keyVal.getKey().equals("creativeView")){
+                try{
+                    new HTTPGet(this).execute((String)keyVal.getValue());
+                } catch(Exception ex){
+                    Log.e("Ads:Phuwnare", "Error reporting companion view event.");
                 }
             }
-        }catch(Exception ex){
-
+            i.remove();
         }
+        if(endCard.staticResource != null){
+            webView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    switch (motionEvent.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            tapTime = new Date().getTime();
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            releaseTime = new Date().getTime();
+                            if(releaseTime - tapTime < tapDelay){
+                                Intent intent = new Intent(me, BrowserView.class);
+                                intent.putExtra("URL", endCard.clickThrough);
+                                me.startActivity(intent);
+                            }
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            break;
+                        default:
+                            break;
+
+                    }
+                    return false;
+                }
+            });
+        }
+        initializeCloseButton();
     }
 
     public void HTTPGetCallback(String str){
@@ -281,7 +325,11 @@ public class VideoPlayer extends AppCompatActivity implements HTTPGetListener {
             @Override
             public void onClick(View v){
                 //if(closeClickable){
+                if(listener != null){
+                    listener.onClose();
+                }
                 finish();
+                overridePendingTransition(0,0);
                 //}
             }
         });
@@ -305,5 +353,50 @@ public class VideoPlayer extends AppCompatActivity implements HTTPGetListener {
         closeButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, size);
         closeButton.setText(text);
     }
+
+    private String getEndCardMarkup(){
+        Rect windowRect = new Rect();
+        webView.getWindowVisibleDisplayFrame(windowRect);
+        if(endCard.staticResource != null){
+            int h = MRAIDUtilities.convertPixelsToDp(windowRect.height(), this);
+            int w = MRAIDUtilities.convertPixelsToDp(windowRect.width(), this);
+
+            StringBuilder str = new StringBuilder();
+            str.append("<!DOCTYPE html>");
+            str.append("<html>");
+            str.append("<head>");
+            str.append("<style>");
+            str.append("body {");
+            str.append("background: url('" + endCard.staticResource + "') no-repeat fixed;");
+            str.append("background-size: contain;");
+            str.append("background-position: center;");
+            str.append("}");
+            str.append("</style>");
+            str.append("</script>");
+            str.append("</head>");
+            str.append("<body style=\"background-color:black; margin:0; padding:0; font-size:0px; width:" + w + "px; height:" + h + "px;\">");
+            str.append("</div>");
+            str.append("<body>");
+            str.append("</html>");
+            return str.toString();
+        }
+        if(endCard.htmlResource != null){
+            if(endCard.htmlResource.contains("</html>")){
+                return endCard.htmlResource;
+            }
+            StringBuilder str = new StringBuilder();
+            str.append("<!DOCTYPE html>");
+            str.append("<html>");
+            str.append("<head>");
+            str.append("</head>");
+            str.append("<body>");
+            str.append(endCard.htmlResource);
+            str.append("</body>");
+            str.append("</html>");
+            return str.toString();
+        }
+        return "";
+    }
+
 }
 

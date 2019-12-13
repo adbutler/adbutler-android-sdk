@@ -23,7 +23,7 @@ import java.util.Map;
  * @author Cristian Perez (http://cpr.name)
  *
  */
-public class VideoEnabledWebView extends WebView
+class VideoEnabledWebView extends WebView
 {
     public class JavascriptInterface
     {

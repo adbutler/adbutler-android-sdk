@@ -25,11 +25,13 @@ import android.widget.FrameLayout;
 
 import java.util.Calendar;
 
-
-public class Interstitial implements MRAIDListener {
+/**
+ * An Interstitial object, which can be displayed once.  Subsequent ads need to have new requests made.
+ */
+public class InterstitialView implements MRAIDListener {
     public boolean isReady = false;
-    public String htmlBody = "";
-    public boolean shown = false;
+    protected String htmlBody = "";
+    protected boolean shown = false;
     private boolean isMRAID = false;
 
     protected AdListener listener = null;
@@ -39,23 +41,32 @@ public class Interstitial implements MRAIDListener {
 
     private Context context;
     MRAIDHandler mraidHandler;
-    public MRAIDHandler getMRAIDHandler(){
+
+    protected MRAIDHandler getMRAIDHandler(){
         return mraidHandler;
     }
     WebView webView;
-    public WebView getWebView(){
+
+    protected WebView getWebView(){
         return webView;
     }
     private boolean suppressCurrentClick = false;
-    private static Interstitial instance;
-    public static Interstitial getInstance(){
+    private static InterstitialView instance;
+    protected static InterstitialView getInstance(){
         return instance;
     }
 
-    public Interstitial(){
+    public InterstitialView(){
         instance = this;
     }
 
+
+    /**
+     * Retrieves the interstitial placement.
+     * @param request AdRequest object containing all required mediation data.
+     * @param context The context from which the request is being made.
+     * @param listener A delegate containing event functions for the ad to call.
+     */
     public void initialize(AdRequest request, Context context, AdListener listener){
         if(!shown){
             this.context = context;
@@ -65,11 +76,16 @@ public class Interstitial implements MRAIDListener {
     }
 
     private PlacementResponseListener getResponseListener(){
-        final Interstitial interstitial = this;
+        final InterstitialView interstitial = this;
         return new PlacementResponseListener() {
             @Override
             public void success(PlacementResponse response) {
-                interstitial.placement = response.getPlacements().get(0);
+                try {
+                    interstitial.placement = response.getPlacements().get(0);
+                }catch(IndexOutOfBoundsException ex){
+                    interstitial.listener.onAdFetchFailed(ErrorCode.NO_INVENTORY);
+                    return;
+                }
                 if(placement == null){
                     interstitial.listener.onAdFetchFailed(ErrorCode.NO_INVENTORY);
                     return;
@@ -100,48 +116,6 @@ public class Interstitial implements MRAIDListener {
                 listener.onAdFetchFailed(ErrorCode.NO_INVENTORY);
             }
         };
-    }
-
-    @SuppressLint("")
-    private void initWebView(String body){
-
-        webView = new WebView(context);
-        webView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-
-        mraidHandler = new MRAIDHandler(this, context, null);
-        mraidHandler.isInterstitial = true;
-        mraidHandler.activeWebView = webView;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            webView.setId(Utilities.generateViewId());
-        } else {
-            webView.setId(View.generateViewId());
-        }
-        WebSettings settings = webView.getSettings();
-
-        webView.setSaveEnabled(true);
-        webView.setSaveFromParentEnabled(true);
-        settings.setJavaScriptEnabled(true);
-
-        // disable scrollbars
-        webView.setVerticalScrollBarEnabled(false);
-        webView.setHorizontalScrollBarEnabled(false);
-        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-
-        // configure webview delegates
-        if(!isMRAID && placement.getBody().length() <= 0) {
-            initTouchListener(webView);
-        }
-        initWebClient(webView);
-        webView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if(mraidHandler.activeWebView != null){
-                    //webViewLayoutChanged(v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom);
-                    mraidHandler.setMRAIDCurrentPosition(new Rect(0,0,MRAIDUtilities.convertPixelsToDp(right, context), MRAIDUtilities.convertPixelsToDp(bottom, context)));
-                }
-            }
-        });
-        webView.loadDataWithBaseURL("http://servedbyadbutler.com", body, "text/html", "UTF-8", "");
     }
 
     @SuppressLint("")
@@ -187,6 +161,48 @@ public class Interstitial implements MRAIDListener {
         str.append("</body>");
         str.append("</html>");
         return str.toString();
+    }
+
+    @SuppressLint("")
+    private void initWebView(String body){
+
+        webView = new WebView(context);
+        webView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+
+        mraidHandler = new MRAIDHandler(this, context, null);
+        mraidHandler.isInterstitial = true;
+        mraidHandler.activeWebView = webView;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            webView.setId(Utilities.generateViewId());
+        } else {
+            webView.setId(View.generateViewId());
+        }
+        WebSettings settings = webView.getSettings();
+
+        webView.setSaveEnabled(true);
+        webView.setSaveFromParentEnabled(true);
+        settings.setJavaScriptEnabled(true);
+
+        // disable scrollbars
+        webView.setVerticalScrollBarEnabled(false);
+        webView.setHorizontalScrollBarEnabled(false);
+        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+
+        // configure webview delegates
+        if(!isMRAID && placement.getBody().length() <= 0) {
+            initTouchListener(webView);
+        }
+        initWebClient(webView);
+        webView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if(mraidHandler.activeWebView != null){
+                    //webViewLayoutChanged(v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom);
+                    mraidHandler.setMRAIDCurrentPosition(new Rect(0,0,MRAIDUtilities.convertPixelsToDp(right, context), MRAIDUtilities.convertPixelsToDp(bottom, context)));
+                }
+            }
+        });
+        webView.loadDataWithBaseURL("http://servedbyadbutler.com", body, "text/html", "UTF-8", "");
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -258,7 +274,7 @@ public class Interstitial implements MRAIDListener {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if(url.contains("servedbyadbutler.com")|| url.contains("adbutler-fermion.com")){
+                if(url.contains("servedbyadbutler.com")){
                     return false;
                 }
                 else if(url.contains("mraid://")){
@@ -340,6 +356,11 @@ public class Interstitial implements MRAIDListener {
     /*
        ======== MRAID Listener =========
      */
+
+    /**
+     * Called by MRAID ads.
+     * @param url
+     */
     public void open(String url){
         placement.requestClickBeacons();
         if(!placement.getClickRecorded()){
@@ -353,27 +374,45 @@ public class Interstitial implements MRAIDListener {
         }
     }
 
+    /**
+     * Called by MRAID ads.
+     */
     public void close() {
         InterstitialActivity.getInstance().finish();
         listener.onAdClosed();
     }
 
+    /**
+     * Called by MRAID ads.
+     */
     public void expand(String url) {
         // TODO can't be expanded
     }
 
+    /**
+     * Called by MRAID ads.
+     */
     public void resize(ResizeProperties properties) {
         //TODO can't be resized
     }
 
+    /**
+     * Called by MRAID ads.
+     */
     public void onLeavingApplication(){
         listener.onAdLeavingApplication();
     }
 
+    /**
+     * Called by MRAID ads.
+     */
     public void reportDOMSize(Size size) {
         // do nothing
     }
 
+    /**
+     * Called by MRAID ads.
+     */
     public void setOrientationProperties(OrientationProperties properties) {
         if(shown){
             if(mraidHandler.orientationProperties.forceOrientation != null){
@@ -408,6 +447,9 @@ public class Interstitial implements MRAIDListener {
         }
     }
 
+    /**
+     * Call this to display the interstitial.
+     */
     @SuppressWarnings("unused")
     public void show(){
         if(isReady){

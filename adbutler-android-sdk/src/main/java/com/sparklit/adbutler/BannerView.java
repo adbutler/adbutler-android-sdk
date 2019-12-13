@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
+/**
+ * The fragment extension containing a Banner.
+ */
 public class BannerView extends Fragment {
     public Banner banner;
     public boolean initializing = false;
@@ -85,7 +87,7 @@ public class BannerView extends Fragment {
         }
     }
 
-    /**
+    /*
      * This method will only be called once when the retained
      * Fragment is first created.
      */
@@ -96,7 +98,7 @@ public class BannerView extends Fragment {
         setRetainInstance(true);
     }
 
-    /**
+    /*
      * Set the callback to null so we don't accidentally leak the
      * Activity instance.
      */
@@ -110,59 +112,26 @@ public class BannerView extends Fragment {
     public BannerView(){
     }
 
-//    /**
-//     * Create a banner in the provided view.  Use if you do not need to set any details such as custom extras, user location, coppa etc.
-//     *
-//     * @param accountID
-//     * @param zoneID
-//     * @param view
-//     * @param context
-//     * @param listener
-//     */
-//    public void initialize(int accountID, int zoneID, View view, Context context, AdListener listener){
-//        initialize(new AdRequest(accountID, zoneID), view, context, listener);
-//    }
-
     /**
-     * Create a banner at the specified screen position constant.  Use if you do not need to set any details such as custom extras, user location, coppa etc.
+     * Create a simple banner without custom data.  Use if you do not need to set any details such as custom extras, user location, coppa etc.
      *
-     * @param accountID
-     * @param zoneID
-     * @param position
-     * @param context
-     * @param listener
+     * @param accountID Your AdButler Account ID.
+     * @param zoneID The Zone you'd like a placement from.
+     * @param position A string representing the screen location at which to show the banner I.E BOTTOM_CENTER.  (com.sparklit.adbutler.Positions)
+     * @param context The context in which to show the banner.
+     * @param listener Event listener for Ad related events.
      */
     public void initialize(int accountID, int zoneID, String position, Context context, AdListener listener){
         initialize(new AdRequest(accountID, zoneID), position, context, listener);
     }
 
-//    /**
-//     * Create a banner in the provided view.  Use if you do not need to set any details such as custom extras, user location, coppa etc.
-//     *
-//     * @param request
-//     * @param view
-//     * @param context
-//     * @param listener
-//     */
-//    public void initialize(AdRequest request, View view, Context context, AdListener listener){
-//        if(initializing){
-//            return;
-//        }
-//        initializing = true;
-//        if(banner != null){
-//            banner.destroy();
-//        }
-//        banner = new Banner(this);
-//        banner.initialize(request, view, context, listener, this);
-//    }
-
     /**
-     * Create a banner in the specified position constant.  Use if you want to specify any custom data in the ad request E.G. coppa
+     * Create a banner with custom data (AdRequest object).  Use if you want to specify any custom data in the ad request E.G. coppa
      *
-     * @param request
-     * @param position
-     * @param context
-     * @param listener
+     * @param request An AdRequest object, containing details required for mediation.
+     * @param position A string representing the screen location at which to show the banner I.E BOTTOM_CENTER.  (com.sparklit.adbutler.Positions)
+     * @param context The context in which to show the banner.
+     * @param listener Event listener for Ad related events.
      */
     public void initialize(AdRequest request, String position, Context context, AdListener listener){
         if(initializing){
@@ -174,5 +143,12 @@ public class BannerView extends Fragment {
         }
         banner = new Banner(this);
         banner.initialize(request, position, context, listener, this);
+    }
+
+    public void destroy(){
+        if(banner != null){
+            banner.destroy();
+            banner = null;
+        }
     }
 }

@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * Configurations for requesting a Placement.
  */
-public class PlacementRequestConfig {
+class PlacementRequestConfig {
     private int accountId;
     private int zoneId;
     private int width;
@@ -47,6 +47,7 @@ public class PlacementRequestConfig {
 
     /**
      * The account ID for this request.
+     * @return int
      */
     public int getAccountId() {
         return accountId;
@@ -203,7 +204,7 @@ public class PlacementRequestConfig {
     /**
      * Builder to configure the parameters used in requesting a Placement.
      */
-    public static class Builder {
+    protected static class Builder {
         private int accountId;
         private int zoneId;
         private int width;

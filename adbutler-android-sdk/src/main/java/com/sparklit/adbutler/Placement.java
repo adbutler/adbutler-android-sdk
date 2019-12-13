@@ -113,10 +113,18 @@ public class Placement {
         return body;
     }
 
+    /**
+     * Get the list of beacons for this placement
+     * @return
+     */
     public List<Beacon> getBeacons() {
         return beacons;
     }
 
+    /**
+     * Check whether a click was recorded.
+     * @return boolean
+     */
     public boolean getClickRecorded(){ return clickRecorded; }
 
     /**

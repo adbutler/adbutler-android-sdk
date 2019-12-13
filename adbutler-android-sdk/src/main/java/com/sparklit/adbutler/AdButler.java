@@ -3,7 +3,6 @@ package com.sparklit.adbutler;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
@@ -41,11 +40,10 @@ public class AdButler {
 
     private static AdButler instance;
 
-    public enum AdTypes {
-        BANNER,
-        INTERSTITIAL
-    }
-
+    /**
+     * The AdButler object is a singleton.
+     * @return AdButler
+     */
     public static AdButler getInstance() {
         if (null == instance) {
             instance = new AdButler();
@@ -53,12 +51,16 @@ public class AdButler {
         return instance;
     }
 
+    /**
+     * Required to be called at least once before you retrieve ads.
+     * @param context
+     */
     public static void initialize(Context context) {
-        AdButler AdButlerSDK = AdButler.getInstance();
-        AdButlerSDK.init(context);
+        AdButler sdk = AdButler.getInstance();
+        sdk.init(context);
     }
 
-    public void init(Context context) {
+    protected void init(Context context) {
         if (isInitialized) {
             Log.w("Ads/AdButler", "Please try to avoid initializing the AdButlerSDK multiple times.");
             return;
@@ -78,16 +80,32 @@ public class AdButler {
         }
     }
 
+    /**
+     * Set the host name.
+     * @param apiHostname
+     */
     public void setApiHostname(String apiHostname) {
         this.apiHostname = apiHostname;
     }
 
+    /**
+     * Set the app version.
+     * @param apiAppVersion
+     */
     public void setApiAppVersion(String apiAppVersion) {
         this.apiAppVersion = apiAppVersion;
     }
 
+    /**
+     * Used to set whether or not personal data can be sent to mediation.  (GDPR consent)
+     * @param allowed
+     */
     public static void setPersonalAdsAllowed(boolean allowed){ getInstance().personalAdsAllowed = allowed; }
 
+    /**
+     * Used to determin if personal data can be sent to mediation.
+     * @return
+     */
     public static boolean isPersonalAdsAllowed(){ return getInstance().personalAdsAllowed; }
 
     /**
@@ -130,6 +148,7 @@ public class AdButler {
 
             @Override
             public void onFailure(Call<PlacementResponse> call, Throwable t) {
+
                 listener.error(t);
             }
         });
@@ -166,9 +185,9 @@ public class AdButler {
     }
 
     private void checkResults(final PlacementResponseListener listener,
-                                    List<Call<PlacementResponse>> calls,
-                                    List<PlacementResponse> responses,
-                                    List<Throwable> throwables) {
+                              List<Call<PlacementResponse>> calls,
+                              List<PlacementResponse> responses,
+                              List<Throwable> throwables) {
         if (responses.size() + throwables.size() != calls.size()) {
             return;
         }
@@ -362,19 +381,9 @@ public class AdButler {
         return URLEncoder.encode(param).replaceAll("\\+", "%20");
     }
 
+    protected static AdvertisingInfo AdvertisingInfo;
 
-
-
-
-
-
-
-
-
-
-    public static AdvertisingInfo AdvertisingInfo;
-
-    public static class AdvertisingInfo {
+    protected static class AdvertisingInfo {
         public final String advertisingId;
         public final boolean limitAdTrackingEnabled;
 
@@ -406,7 +415,7 @@ public class AdButler {
         @Override
         protected Void doInBackground(Void... voids) {
             AdvertisingIdClient.Info advertisingIdInfo = null;
-            AdButler AdButlerSDK = AdButler.getInstance();
+            AdButler sdk = AdButler.getInstance();
             try {
                 Context context = weakRefContext.get();
                 advertisingIdInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
@@ -419,7 +428,7 @@ public class AdButler {
             }
 
             if (null != advertisingIdInfo) {
-                AdButlerSDK.setAdvertisingInfo(advertisingIdInfo.getId(), advertisingIdInfo.isLimitAdTrackingEnabled());
+                sdk.setAdvertisingInfo(advertisingIdInfo.getId(), advertisingIdInfo.isLimitAdTrackingEnabled());
             } else {
                 Log.d("Ads/AdButler", "Unable to retrieve the AdvertisingIdClient.Info data.");
             }

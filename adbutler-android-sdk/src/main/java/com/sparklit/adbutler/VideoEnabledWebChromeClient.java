@@ -24,7 +24,7 @@ import android.widget.FrameLayout;
  * @author Cristian Perez (http://cpr.name)
  *
  */
-public class VideoEnabledWebChromeClient extends WebChromeClient implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener
+class VideoEnabledWebChromeClient extends WebChromeClient implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener
 {
     public interface ToggledFullscreenCallback
     {

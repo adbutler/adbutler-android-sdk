@@ -20,7 +20,9 @@ import android.widget.TextView;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
+/**
+ * When shown, an Interstitial will create it's own activity.
+ */
 public class InterstitialActivity extends AppCompatActivity {
     WebView webView;
 
@@ -39,7 +41,7 @@ public class InterstitialActivity extends AppCompatActivity {
     MRAIDHandler mraidHandler;
 
     static AppCompatActivity instance;
-    public static AppCompatActivity getInstance(){
+    protected static AppCompatActivity getInstance(){
         return instance;
     }
 
@@ -55,7 +57,7 @@ public class InterstitialActivity extends AppCompatActivity {
     }
 
     public void init(){
-        mraidHandler = Interstitial.getInstance().getMRAIDHandler();
+        mraidHandler = InterstitialView.getInstance().getMRAIDHandler();
         if(mraidHandler != null && mraidHandler.orientationProperties.forceOrientation != null){
             if(mraidHandler.orientationProperties.forceOrientation.equals(Orientations.LANDSCAPE)){
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -75,7 +77,7 @@ public class InterstitialActivity extends AppCompatActivity {
         // we made the activity instance static so we can access its functions from the Interstitial class.
         // change this in the future so that the interstitial activity has all of the mraid handling inside it, rather than the interstitial class.
         // for now, remove the old instance of the interstitial activity, in case the app loses focus and needs to recreate this activity.
-        webView = Interstitial.getInstance().getWebView();
+        webView = InterstitialView.getInstance().getWebView();
         if(webView.getParent() != null){
             ViewGroup parent = (ViewGroup)webView.getParent();
             parent.removeView(webView);
@@ -83,7 +85,7 @@ public class InterstitialActivity extends AppCompatActivity {
         }
 
         root.addView(webView);
-        Interstitial.getInstance().shown = true;
+        InterstitialView.getInstance().shown = true;
         initializeCloseButton();
         recordImpression();
         if(mraidHandler != null){
@@ -91,6 +93,7 @@ public class InterstitialActivity extends AppCompatActivity {
             mraidHandler.fireMRAIDEvent(Events.VIEWABLE_CHANGE, "true");
         }
     }
+
 
     void initializeCloseButton(){
         FrameLayout item = findViewById(R.id.btnBackground);
@@ -135,7 +138,7 @@ public class InterstitialActivity extends AppCompatActivity {
     }
 
     void recordImpression(){
-        Interstitial interstitial = Interstitial.getInstance();
+        InterstitialView interstitial = InterstitialView.getInstance();
         if (!interstitial.isImpressionRecorded) {
             interstitial.isImpressionRecorded = true;
             // Fetch successful, record an impression.
@@ -174,7 +177,7 @@ public class InterstitialActivity extends AppCompatActivity {
                         updateTimerFade();
                     }
                 });
-          }
+            }
         };
         fadeTimer.scheduleAtFixedRate(task, 0, (long)closeFadeRate);
     }
@@ -193,9 +196,6 @@ public class InterstitialActivity extends AppCompatActivity {
                 fadeTimer.cancel();
                 fadeTimer = null;
             }
-        }
-        else{
-            // whoa there ... chill.
         }
     }
 

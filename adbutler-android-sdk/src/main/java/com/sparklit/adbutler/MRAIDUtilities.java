@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-public class MRAIDUtilities {
+class MRAIDUtilities {
     public static String replaceMRAIDScript(String htmlBody){
         String pattern = "<script\\s+[^>]*\\bsrc\\s*=\\s*\\\\?([\\\\\"\\\\'])mraid\\.js\\\\?\\1[^>]*>[^<]*<\\/script>\\n*";
         return htmlBody.replaceAll(pattern, "<script src=\"" + MRAIDConstants.MRAIDJSLocation + "?v=" + new Date().getTime() + "\"></script>");

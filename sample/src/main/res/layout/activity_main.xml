@@ -30,16 +30,7 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:onClick="onGetInterstitialClick"
-            android:text="Get Interstitial"
-            />
-
-        <Button
-            android:id="@+id/btnGetMRAIDInterstitial"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:onClick="onGetMRAIDInterstitialClick"
-            android:text="Get MRAID Interstitial"
+            android:text="Get interstitial"
             />
 
         <Button
@@ -48,34 +39,7 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:onClick="onGetBannerClick"
-            android:text="Get Banner"
-            />
-
-        <Button
-            android:id="@+id/btnGetMRAIDBanner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:onClick="onGetMRAIDBannerClick"
-            android:text="Get MRAID Expandable Banner"
-            />
-
-        <Button
-            android:id="@+id/btnGetMRAIDTwoPartBanner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:onClick="onGetMRAIDTwoPartBannerClick"
-            android:text="Get MRAID 2 Part Expandable Banner"
-            />
-
-        <Button
-            android:id="@+id/btnGetMRAIDResizableBanner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:onClick="onGetMRAIDResizableBannerClick"
-            android:text="Get MRAID Resizable Banner"
+            android:text="Get banner"
             />
 
         <Button
@@ -87,6 +51,7 @@
             android:text="Get VAST Video"
             />
 
+
         <FrameLayout android:id="@+id/adbutler_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -97,7 +62,6 @@
                 android:layout_width="wrap_content"
                 />
         </FrameLayout>
-
 
     </LinearLayout>
 

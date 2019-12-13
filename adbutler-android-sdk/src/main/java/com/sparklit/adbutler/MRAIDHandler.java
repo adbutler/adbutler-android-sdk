@@ -28,7 +28,7 @@ import com.google.gson.GsonBuilder;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 
-public class MRAIDHandler {
+class MRAIDHandler {
 
     public String state = States.LOADING;
     public boolean isInterstitial = false;
@@ -523,9 +523,7 @@ public class MRAIDHandler {
     }
 
     private void setMRAIDMaxSize(){
-//        int height = MRAIDUtilities.convertPixelsToDp(view.getHeight(), view.getContext());
-//        int width = MRAIDUtilities.convertPixelsToDp(view.getWidth(), view.getContext());
-        //TODO make this the main app area
+        //TODO if we will support non-fullscreen apps, determine the allowable space. not recommended by IAB
         DisplayMetrics displayMetrics = activeWebView.getContext().getResources().getDisplayMetrics();
         int dpHeight = Math.round(displayMetrics.heightPixels / displayMetrics.density);
         int dpWidth = Math.round(displayMetrics.widthPixels / displayMetrics.density);

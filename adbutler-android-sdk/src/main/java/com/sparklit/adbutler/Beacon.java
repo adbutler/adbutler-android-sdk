@@ -11,10 +11,18 @@ public class Beacon {
     @SerializedName("url")
     private String url;
 
+    /**
+     * Get the type of Beacon.
+     * @return String
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * Get the url of the Beacon.
+     * @return String
+     */
     public String getUrl() {
         return url;
     }

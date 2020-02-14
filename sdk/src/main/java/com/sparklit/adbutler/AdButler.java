@@ -19,8 +19,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class AdButler {
     static String ADBUTLER_ENDPOINT = "https://servedbyadbutler.com/adserve/";
+    static String DOMAIN = "servedbyadbutler.com";
 
     private APIService service;
+
+    public void setDomain(String domain){
+        DOMAIN = domain;
+    }
 
     /**
      * Requests a pixel.
@@ -129,7 +134,7 @@ public class AdButler {
                     .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                     .create();
             Retrofit.Builder builder = new Retrofit.Builder()
-                    .baseUrl(ADBUTLER_ENDPOINT)
+                    .baseUrl("https://" + DOMAIN + "/adserve/")
                     .addConverterFactory(GsonConverterFactory.create(gson));
             service = builder.build().create(APIService.class);
         }

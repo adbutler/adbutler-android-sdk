@@ -1,3 +1,8 @@
+> [!WARNING]
+> **This repository is deprecated and no longer maintained.**
+> It may not be compatible with current software versions and is not recommended for direct use in production environments.
+> This repository is provided as-is and should be used as a guideline for custom integrations only.
+
 # adbutler-android-sdk
 
 ## Installation

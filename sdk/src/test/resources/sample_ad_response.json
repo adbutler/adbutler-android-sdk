@@ -1,0 +1,20 @@
+{
+  "status": "SUCCESS",
+  "placements": {
+    "placement_1": {
+      "banner_id": 123456,
+      "width": 300,
+      "height": 250,
+      "image_url": "https://servedbyadbutler.com/getad.img/;libID=1;img=300x250.png",
+      "redirect_url": "https://servedbyadbutler.com/redirect.spark?MID=123456",
+      "alt_text": "Sample Banner Ad",
+      "target": "_blank",
+      "tracking_pixel": "https://tracking.example.com/pixel.gif",
+      "body": "",
+      "refresh_time": 30,
+      "accupixel_url": "https://servedbyadbutler.com/adserve/;ID=182804;type=impression",
+      "eligible_url": "https://servedbyadbutler.com/adserve/;ID=182804;type=eligibleimpression",
+      "viewable_url": "https://servedbyadbutler.com/adserve/;ID=182804;type=viewableimpression"
+    }
+  }
+}

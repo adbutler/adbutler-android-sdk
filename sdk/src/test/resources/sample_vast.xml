@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VAST version="4.2">
+  <Ad id="ad-001" sequence="1">
+    <InLine>
+      <AdSystem>AdButler</AdSystem>
+      <AdTitle>Sample Pre-Roll</AdTitle>
+      <Impression><![CDATA[https://servedbyadbutler.com/vast/impression?id=001]]></Impression>
+      <Error><![CDATA[https://servedbyadbutler.com/vast/error?id=001]]></Error>
+      <Creatives>
+        <Creative>
+          <Linear skipoffset="00:00:05">
+            <Duration>00:00:30</Duration>
+            <MediaFiles>
+              <MediaFile type="video/mp4" width="1920" height="1080" delivery="progressive" bitrate="2000" codec="H.264">
+                <![CDATA[https://cdn.example.com/ads/preroll-1080p.mp4]]>
+              </MediaFile>
+              <MediaFile type="video/mp4" width="1280" height="720" delivery="progressive" bitrate="1200">
+                <![CDATA[https://cdn.example.com/ads/preroll-720p.mp4]]>
+              </MediaFile>
+              <MediaFile type="video/mp4" width="640" height="360" delivery="progressive" bitrate="600">
+                <![CDATA[https://cdn.example.com/ads/preroll-360p.mp4]]>
+              </MediaFile>
+            </MediaFiles>
+            <TrackingEvents>
+              <Tracking event="start"><![CDATA[https://servedbyadbutler.com/vast/track?event=start]]></Tracking>
+              <Tracking event="firstQuartile"><![CDATA[https://servedbyadbutler.com/vast/track?event=firstQuartile]]></Tracking>
+              <Tracking event="midpoint"><![CDATA[https://servedbyadbutler.com/vast/track?event=midpoint]]></Tracking>
+              <Tracking event="thirdQuartile"><![CDATA[https://servedbyadbutler.com/vast/track?event=thirdQuartile]]></Tracking>
+              <Tracking event="complete"><![CDATA[https://servedbyadbutler.com/vast/track?event=complete]]></Tracking>
+            </TrackingEvents>
+            <VideoClicks>
+              <ClickThrough><![CDATA[https://www.example.com/product]]></ClickThrough>
+              <ClickTracking><![CDATA[https://servedbyadbutler.com/vast/track?event=click]]></ClickTracking>
+            </VideoClicks>
+          </Linear>
+        </Creative>
+        <Creative>
+          <CompanionAds>
+            <Companion width="300" height="250">
+              <StaticResource creativeType="image/png"><![CDATA[https://cdn.example.com/ads/companion-300x250.png]]></StaticResource>
+              <CompanionClickThrough><![CDATA[https://www.example.com/companion-click]]></CompanionClickThrough>
+            </Companion>
+          </CompanionAds>
+        </Creative>
+      </Creatives>
+    </InLine>
+  </Ad>
+</VAST>

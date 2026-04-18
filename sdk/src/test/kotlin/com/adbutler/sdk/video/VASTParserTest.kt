@@ -45,7 +45,7 @@ class VASTParserTest {
         """.trimIndent()
 
         val parser = VASTParser()
-        val response = parser.parse(xml.byteInputStream())
+        val response = parser.parse(xml.toByteArray())
 
         assertEquals("4.2", response.version)
         assertEquals(1, response.ads.size)
@@ -116,7 +116,7 @@ class VASTParserTest {
         """.trimIndent()
 
         val parser = VASTParser()
-        val response = parser.parse(xml.byteInputStream())
+        val response = parser.parse(xml.toByteArray())
 
         assertEquals("2.0", response.version)
         assertEquals(1, response.ads.size)
@@ -148,7 +148,7 @@ class VASTParserTest {
         """.trimIndent()
 
         val parser = VASTParser()
-        val response = parser.parse(xml.byteInputStream())
+        val response = parser.parse(xml.toByteArray())
 
         val ad = response.ads[0]
         assertTrue(ad.isWrapper)
@@ -194,7 +194,7 @@ class VASTParserTest {
         """.trimIndent()
 
         val parser = VASTParser()
-        val response = parser.parse(xml.byteInputStream())
+        val response = parser.parse(xml.toByteArray())
 
         val ad = response.ads[0]
         assertEquals(2, ad.companions.size)

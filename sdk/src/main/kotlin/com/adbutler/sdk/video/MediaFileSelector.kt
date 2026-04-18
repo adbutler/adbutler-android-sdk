@@ -25,37 +25,71 @@ internal object MediaFileSelector {
     fun selectBest(mediaFiles: List<VASTMediaFile>, maxBitrate: Int? = null): VASTMediaFile? {
         if (mediaFiles.isEmpty()) return null
 
-        val dm = Resources.getSystem().displayMetrics
-        val screenWidth = (dm.widthPixels * dm.density).toInt()
-        val screenHeight = (dm.heightPixels * dm.density).toInt()
-
-        // Filter to supported MIME types
-        val compatible = mediaFiles.filter { file ->
-            PREFERRED_TYPES.contains(file.mimeType.lowercase())
+        val screenWidth: Int
+        val screenHeight: Int
+        try {
+            val dm = Resources.getSystem().displayMetrics
+            screenWidth = (dm.widthPixels * dm.density).toInt()
+            screenHeight = (dm.heightPixels * dm.density).toInt()
+        } catch (_: Exception) {
+            // Fallback for unit tests or non-Android environments
+            return selectBestByPreference(mediaFiles, maxBitrate)
         }
 
-        if (compatible.isEmpty()) {
-            // Fall back to any progressive media file
+        if (screenWidth == 0 && screenHeight == 0) {
+            return selectBestByPreference(mediaFiles, maxBitrate)
+        }
+
+        return selectBestForScreen(mediaFiles, screenWidth, screenHeight, maxBitrate)
+    }
+
+    private fun selectBestByPreference(
+        mediaFiles: List<VASTMediaFile>,
+        maxBitrate: Int?
+    ): VASTMediaFile? {
+        val compatible = mediaFiles.filter { PREFERRED_TYPES.contains(it.mimeType.lowercase()) }
+        val pool = compatible.ifEmpty {
             return mediaFiles.firstOrNull { it.delivery == "progressive" } ?: mediaFiles.first()
         }
 
-        // Filter by bitrate if max specified
-        val bitrateFiltered: List<VASTMediaFile>
-        if (maxBitrate != null) {
-            bitrateFiltered = compatible.filter { (it.bitrate ?: 0) <= maxBitrate }
-            if (bitrateFiltered.isEmpty()) {
-                // All files exceed bitrate, use the lowest bitrate one
+        val filtered = if (maxBitrate != null) {
+            pool.filter { (it.bitrate ?: 0) <= maxBitrate }.ifEmpty {
+                return pool.minByOrNull { it.bitrate ?: 0 }
+            }
+        } else {
+            pool
+        }
+
+        // Prefer highest bitrate mp4
+        return filtered
+            .sortedWith(compareBy<VASTMediaFile> {
+                PREFERRED_TYPES.indexOf(it.mimeType.lowercase()).let { idx -> if (idx < 0) 999 else idx }
+            }.thenByDescending { it.bitrate ?: 0 })
+            .first()
+    }
+
+    private fun selectBestForScreen(
+        mediaFiles: List<VASTMediaFile>,
+        screenWidth: Int,
+        screenHeight: Int,
+        maxBitrate: Int?
+    ): VASTMediaFile? {
+        val compatible = mediaFiles.filter { PREFERRED_TYPES.contains(it.mimeType.lowercase()) }
+        if (compatible.isEmpty()) {
+            return mediaFiles.firstOrNull { it.delivery == "progressive" } ?: mediaFiles.first()
+        }
+
+        val bitrateFiltered = if (maxBitrate != null) {
+            compatible.filter { (it.bitrate ?: 0) <= maxBitrate }.ifEmpty {
                 return compatible.minByOrNull { it.bitrate ?: 0 }
             }
         } else {
-            bitrateFiltered = compatible
+            compatible
         }
 
-        // Score by closeness to screen dimensions + prefer higher bitrate
         return bitrateFiltered.minByOrNull { file ->
             val dimScore = Math.abs(file.width - screenWidth) + Math.abs(file.height - screenHeight)
             val bitrateBonus = file.bitrate ?: 0
-            // Lower dimScore = better fit. Higher bitrate = better quality (subtract from score).
             dimScore - bitrateBonus / 10
         }
     }

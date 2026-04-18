@@ -2,7 +2,10 @@ package com.adbutler.sdk.core
 
 import org.junit.Assert.*
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 class AdResponseParsingTest {
 
     @Test

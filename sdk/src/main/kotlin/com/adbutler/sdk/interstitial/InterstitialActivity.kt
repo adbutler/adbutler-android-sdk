@@ -13,7 +13,7 @@ import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
-import androidx.activity.ComponentActivity
+import android.app.Activity
 import com.adbutler.sdk.core.AdResponse
 import com.adbutler.sdk.core.ViewabilityTracker
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +27,7 @@ import kotlinx.coroutines.withContext
  * Fullscreen Activity that renders an interstitial ad.
  * Launched internally by [AdButlerInterstitialAd.show].
  */
-class InterstitialActivity : ComponentActivity() {
+class InterstitialActivity : Activity() {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var viewabilityTracker: ViewabilityTracker? = null

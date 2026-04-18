@@ -87,10 +87,15 @@ internal object MediaFileSelector {
             compatible
         }
 
-        return bitrateFiltered.minByOrNull { file ->
-            val dimScore = Math.abs(file.width - screenWidth) + Math.abs(file.height - screenHeight)
-            val bitrateBonus = file.bitrate ?: 0
-            dimScore - bitrateBonus / 10
-        }
+        // Score by screen fit, then prefer MIME type order (mp4 first), then higher bitrate
+        return bitrateFiltered.sortedWith(
+            compareBy<VASTMediaFile> { file ->
+                val dimScore = Math.abs(file.width - screenWidth) + Math.abs(file.height - screenHeight)
+                val bitrateBonus = file.bitrate ?: 0
+                dimScore - bitrateBonus / 10
+            }.thenBy { file ->
+                PREFERRED_TYPES.indexOf(file.mimeType.lowercase()).let { if (it < 0) 999 else it }
+            }
+        ).firstOrNull()
     }
 }
